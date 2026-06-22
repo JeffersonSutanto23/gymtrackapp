@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,6 +16,23 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Jefferson Trader — Gym & Nutrition Tracker",
   description: "Track gym progress and nutrition for clean bulk, bulk, or cut.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "JeffersonTrader",
+  },
+  icons: {
+    icon: ["/icon-192.png", "/icon-512.png"],
+    apple: "/apple-touch-icon.png",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({
@@ -28,6 +46,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-neutral-950 text-neutral-100">
+        <ServiceWorkerRegister />
         {children}
       </body>
     </html>
