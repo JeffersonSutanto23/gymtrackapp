@@ -1,6 +1,6 @@
 {
-  "name": "Jefferson Trader — Gym & Nutrition Tracker",
-  "short_name": "JeffersonTrader",
+  "name": "Macrofit — Gym & Nutrition Tracker",
+  "short_name": "Macrofit",
   "description": "Track gym progress and nutrition for clean bulk, bulk, or cut.",
   "start_url": "/dashboard",
   "scope": "/",

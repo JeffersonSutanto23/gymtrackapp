@@ -69,14 +69,14 @@ export function CustomFoodForm() {
             required
             value={form.name}
             onChange={(e) => update("name", e.target.value)}
-            className="input"
+            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
           />
         </Field>
         <Field label="Brand (optional)">
-          <input value={form.brand} onChange={(e) => update("brand", e.target.value)} className="input" />
+          <input value={form.brand} onChange={(e) => update("brand", e.target.value)} className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500" />
         </Field>
         <Field label="Category">
-          <select value={form.category} onChange={(e) => update("category", e.target.value)} className="input">
+          <select value={form.category} onChange={(e) => update("category", e.target.value)} className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500">
             {FOOD_CATEGORIES.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -90,7 +90,7 @@ export function CustomFoodForm() {
             value={form.servingUnit}
             onChange={(e) => update("servingUnit", e.target.value)}
             placeholder="g, cup, piece..."
-            className="input"
+            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
           />
         </Field>
         <Field label="Serving size">
@@ -101,7 +101,7 @@ export function CustomFoodForm() {
             required
             value={form.servingSize}
             onChange={(e) => update("servingSize", Number(e.target.value))}
-            className="input"
+            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
           />
         </Field>
         <Field label="Calories">
@@ -111,7 +111,7 @@ export function CustomFoodForm() {
             required
             value={form.calories}
             onChange={(e) => update("calories", Number(e.target.value))}
-            className="input"
+            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
           />
         </Field>
         <Field label="Protein (g)">
@@ -122,7 +122,7 @@ export function CustomFoodForm() {
             required
             value={form.proteinG}
             onChange={(e) => update("proteinG", Number(e.target.value))}
-            className="input"
+            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
           />
         </Field>
         <Field label="Carbs (g)">
@@ -133,7 +133,7 @@ export function CustomFoodForm() {
             required
             value={form.carbsG}
             onChange={(e) => update("carbsG", Number(e.target.value))}
-            className="input"
+            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
           />
         </Field>
         <Field label="Fat (g)">
@@ -144,7 +144,7 @@ export function CustomFoodForm() {
             required
             value={form.fatG}
             onChange={(e) => update("fatG", Number(e.target.value))}
-            className="input"
+            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
           />
         </Field>
       </div>
@@ -161,19 +161,6 @@ export function CustomFoodForm() {
           Cancel
         </button>
       </div>
-      <style jsx>{`
-        .input {
-          background: #171717;
-          border: 1px solid #262626;
-          border-radius: 0.375rem;
-          padding: 0.4rem 0.6rem;
-          font-size: 0.875rem;
-          outline: none;
-        }
-        .input:focus {
-          border-color: #10b981;
-        }
-      `}</style>
     </form>
   );
 }

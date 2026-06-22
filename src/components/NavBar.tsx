@@ -27,7 +27,7 @@ export function NavBar({ userName }: { userName: string }) {
     <header className="border-b border-neutral-300 bg-white/95 sticky top-0 z-10">
       <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-6">
-          <span className="font-bold text-emerald-600">JeffersonTrader</span>
+          <span className="font-bold text-emerald-600">Macrofit</span>
           <nav className="hidden sm:flex gap-1">
             {LINKS.map((link) => {
               const active = pathname === link.href || pathname?.startsWith(link.href + "/");

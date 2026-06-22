@@ -57,6 +57,11 @@ export const foodLogSchema = z.object({
   loggedAt: z.string().optional(),
 });
 
+export const foodPhotoAnalysisSchema = z.object({
+  image: z.string().min(1).max(8_000_000),
+  mediaType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+});
+
 export const customFoodSchema = z.object({
   name: z.string().min(1).max(120),
   brand: z.string().max(80).optional(),

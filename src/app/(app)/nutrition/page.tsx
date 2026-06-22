@@ -4,6 +4,7 @@ import { computeFoodLogTotals, round } from "@/lib/nutrition";
 import { GOAL_PRESETS, MEAL_TYPE_LABELS } from "@/lib/goals";
 import { MacroBar } from "@/components/MacroBar";
 import { FoodSearchPicker } from "@/components/FoodSearchPicker";
+import { FoodPhotoAnalyzer } from "@/components/FoodPhotoAnalyzer";
 import { DateNav } from "@/components/DateNav";
 import { DeleteButton } from "@/components/DeleteButton";
 
@@ -66,6 +67,12 @@ export default async function NutritionPage({
       <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <h2 className="font-semibold mb-3">Add Food</h2>
         <FoodSearchPicker date={date} />
+      </section>
+
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
+        <h2 className="font-semibold mb-3">Scan a Meal (AI)</h2>
+        <p className="text-sm text-neutral-600 mb-3">Take or upload a photo and get an AI nutrition estimate you can edit before logging.</p>
+        <FoodPhotoAnalyzer date={date} />
       </section>
 
       {byMeal.map(({ mealType, logs: mealLogs }) => {

@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jefferson Trader — Gym & Nutrition Tracker",
+  title: "Macrofit — Gym & Nutrition Tracker",
   description: "Track gym progress and nutrition for clean bulk, bulk, or cut.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "JeffersonTrader",
+    title: "Macrofit",
   },
   icons: {
     icon: ["/icon-192.png", "/icon-512.png"],
