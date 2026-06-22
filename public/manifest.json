@@ -1,6 +1,6 @@
 {
-  "name": "Repforge — Gym & Nutrition Tracker",
-  "short_name": "Repforge",
+  "name": "Pumpwise — Gym & Nutrition Tracker",
+  "short_name": "Pumpwise",
   "description": "Track gym progress and nutrition for clean bulk, bulk, or cut.",
   "start_url": "/dashboard",
   "scope": "/",

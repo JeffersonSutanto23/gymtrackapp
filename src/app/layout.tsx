@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Repforge — Gym & Nutrition Tracker",
+  title: "Pumpwise — Gym & Nutrition Tracker",
   description: "Track gym progress and nutrition for clean bulk, bulk, or cut.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Repforge",
+    title: "Pumpwise",
   },
   icons: {
     icon: ["/icon-192.png", "/icon-512.png"],
