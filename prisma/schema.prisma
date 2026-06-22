@@ -143,7 +143,8 @@ model SleepLog {
   id       String   @id @default(cuid())
   userId   String
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hours    Float
+  bedTime  DateTime
+  wakeTime DateTime
   loggedAt DateTime @default(now())
 
   @@index([userId, loggedAt])

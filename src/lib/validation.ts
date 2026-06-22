@@ -70,10 +70,14 @@ export const cardioLogSchema = z.object({
   loggedAt: z.string().optional(),
 });
 
-export const sleepLogSchema = z.object({
-  hours: z.number().positive().max(24),
-  loggedAt: z.string().optional(),
-});
+export const sleepLogSchema = z
+  .object({
+    bedTime: z.string().min(1),
+    wakeTime: z.string().min(1),
+  })
+  .refine((data) => new Date(data.wakeTime) > new Date(data.bedTime), {
+    message: "Wake time must be after bed time",
+  });
 
 export const waterLogSchema = z.object({
   glasses: z.number().int().positive().max(50),

@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
   const log = await prisma.sleepLog.create({
     data: {
       userId: user!.id,
-      hours: parsed.data.hours,
-      loggedAt: parsed.data.loggedAt ? new Date(parsed.data.loggedAt) : undefined,
+      bedTime: new Date(parsed.data.bedTime),
+      wakeTime: new Date(parsed.data.wakeTime),
     },
   });
 

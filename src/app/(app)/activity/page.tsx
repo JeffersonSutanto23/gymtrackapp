@@ -2,6 +2,8 @@ import { Activity, GlassWater, Moon } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { CARDIO_TYPE_LABELS } from "@/lib/goals";
+import { formatTime, sleepHours } from "@/lib/sleep";
+import { round } from "@/lib/nutrition";
 import { CardioForm } from "@/components/CardioForm";
 import { SleepForm } from "@/components/SleepForm";
 import { WaterForm } from "@/components/WaterForm";
@@ -68,8 +70,11 @@ export default async function ActivityPage() {
                     key={log.id}
                     className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-neutral-50"
                   >
-                    <span className="font-medium">{log.hours} h</span>
-                    <span className="text-neutral-500">{new Date(log.loggedAt).toLocaleDateString()}</span>
+                    <span className="font-medium">{round(sleepHours(log.bedTime, log.wakeTime), 1)} h</span>
+                    <span className="text-neutral-500">
+                      {formatTime(log.bedTime)} – {formatTime(log.wakeTime)} ·{" "}
+                      {new Date(log.wakeTime).toLocaleDateString()}
+                    </span>
                     <DeleteButton endpoint={`/api/sleep/${log.id}`} />
                   </li>
                 ))}

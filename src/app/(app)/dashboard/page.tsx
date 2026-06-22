@@ -3,6 +3,7 @@ import { LayoutDashboard, Utensils, Scale, Dumbbell, ArrowRight, Activity, Moon,
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
+import { sleepHours } from "@/lib/sleep";
 import { GOAL_LABELS, GOAL_PRESETS } from "@/lib/goals";
 import { MacroBar } from "@/components/MacroBar";
 import { WeightChart } from "@/components/WeightChart";
@@ -132,7 +133,9 @@ export default async function DashboardPage() {
           </div>
           <div>
             <Moon className="mx-auto mb-1 h-4 w-4 text-neutral-400" />
-            <p className="text-xl font-semibold tracking-tight">{todaySleep ? todaySleep.hours : "—"}</p>
+            <p className="text-xl font-semibold tracking-tight">
+              {todaySleep ? round(sleepHours(todaySleep.bedTime, todaySleep.wakeTime), 1) : "—"}
+            </p>
             <p className="text-xs text-neutral-500">last sleep (h)</p>
           </div>
           <div>
