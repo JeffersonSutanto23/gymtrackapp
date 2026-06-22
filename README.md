@@ -1,4 +1,4 @@
-# Pumpwise — Gym & Nutrition Tracker
+# TrackPump — Gym & Nutrition Tracker
 
 A full-stack app for tracking gym workouts and nutrition (clean bulk / bulk / cut), backed by a
 seeded database of 170+ foods across 12 categories and 70 exercises.

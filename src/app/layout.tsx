@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pumpwise — Gym & Nutrition Tracker",
+  title: "TrackPump — Gym & Nutrition Tracker",
   description: "Track gym progress and nutrition for clean bulk, bulk, or cut.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Pumpwise",
+    title: "TrackPump",
   },
   icons: {
     icon: ["/icon-192.png", "/icon-512.png"],

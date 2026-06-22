@@ -62,6 +62,24 @@ export const foodPhotoAnalysisSchema = z.object({
   mediaType: z.enum(["image/jpeg", "image/png", "image/webp"]),
 });
 
+export const cardioLogSchema = z.object({
+  activity: z.enum(["RUN", "TREADMILL", "BIKE", "SWIM", "WALK", "OTHER"]),
+  durationMin: z.number().int().positive(),
+  distanceKm: z.number().nonnegative().optional().nullable(),
+  calories: z.number().int().nonnegative().optional().nullable(),
+  loggedAt: z.string().optional(),
+});
+
+export const sleepLogSchema = z.object({
+  hours: z.number().positive().max(24),
+  loggedAt: z.string().optional(),
+});
+
+export const waterLogSchema = z.object({
+  glasses: z.number().int().positive().max(50),
+  loggedAt: z.string().optional(),
+});
+
 export const customFoodSchema = z.object({
   name: z.string().min(1).max(120),
   brand: z.string().max(80).optional(),

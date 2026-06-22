@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, Utensils, Scale, Dumbbell, ArrowRight } from "lucide-react";
+import { LayoutDashboard, Utensils, Scale, Dumbbell, ArrowRight, Activity, Moon, GlassWater } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
@@ -14,12 +14,14 @@ import { EmptyState } from "@/components/ui/EmptyState";
 export default async function DashboardPage() {
   const user = await getCurrentUser();
 
-  const [profile, todayLogs, weightLogs, recentSessions] = await Promise.all([
+  const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
+
+  const [profile, todayLogs, weightLogs, recentSessions, todayCardio, todaySleep, todayWater] = await Promise.all([
     prisma.profile.findUnique({ where: { userId: user!.id } }),
     prisma.foodLog.findMany({
       where: {
         userId: user!.id,
-        loggedAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+        loggedAt: { gte: startOfDay },
       },
       include: { food: true },
     }),
@@ -34,7 +36,13 @@ export default async function DashboardPage() {
       take: 5,
       include: { sets: true },
     }),
+    prisma.cardioLog.findMany({ where: { userId: user!.id, loggedAt: { gte: startOfDay } } }),
+    prisma.sleepLog.findFirst({ where: { userId: user!.id }, orderBy: { loggedAt: "desc" } }),
+    prisma.waterLog.findMany({ where: { userId: user!.id, loggedAt: { gte: startOfDay } } }),
   ]);
+
+  const todayCardioMin = todayCardio.reduce((sum, log) => sum + log.durationMin, 0);
+  const todayGlasses = todayWater.reduce((sum, log) => sum + log.glasses, 0);
 
   const targets = profile ?? { goal: "MAINTAIN" as const, ...GOAL_PRESETS.MAINTAIN };
   const totals = computeFoodLogTotals(todayLogs);
@@ -105,6 +113,35 @@ export default async function DashboardPage() {
           <WeightChart data={chartData} />
         </Card>
       </div>
+
+      <Card>
+        <SectionHeader
+          icon={Activity}
+          title="Today's Activity"
+          action={
+            <Link href="/activity" className="flex items-center gap-1 text-sm text-emerald-600 hover:underline">
+              Log activity <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          }
+        />
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <Activity className="mx-auto mb-1 h-4 w-4 text-neutral-400" />
+            <p className="text-xl font-semibold tracking-tight">{todayCardioMin}</p>
+            <p className="text-xs text-neutral-500">cardio min</p>
+          </div>
+          <div>
+            <Moon className="mx-auto mb-1 h-4 w-4 text-neutral-400" />
+            <p className="text-xl font-semibold tracking-tight">{todaySleep ? todaySleep.hours : "—"}</p>
+            <p className="text-xs text-neutral-500">last sleep (h)</p>
+          </div>
+          <div>
+            <GlassWater className="mx-auto mb-1 h-4 w-4 text-neutral-400" />
+            <p className="text-xl font-semibold tracking-tight">{todayGlasses}</p>
+            <p className="text-xs text-neutral-500">water glasses</p>
+          </div>
+        </div>
+      </Card>
 
       <Card>
         <SectionHeader

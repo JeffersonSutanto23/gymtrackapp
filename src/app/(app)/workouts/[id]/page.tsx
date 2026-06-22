@@ -15,18 +15,31 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const user = await getCurrentUser();
 
-  const [session, exercises] = await Promise.all([
+  const [session, exercises, recentSets] = await Promise.all([
     prisma.workoutSession.findUnique({
       where: { id },
       include: { sets: { include: { exercise: true }, orderBy: { setNumber: "asc" } } },
     }),
     prisma.exercise.findMany({ orderBy: { name: "asc" } }),
+    prisma.workoutSet.findMany({
+      where: { session: { userId: user!.id } },
+      orderBy: [{ session: { startedAt: "desc" } }, { setNumber: "desc" }],
+      select: { exerciseId: true, reps: true, weightKg: true },
+      take: 500,
+    }),
   ]);
 
   if (!session || session.userId !== user!.id) notFound();
 
   const nextSetNumber = session.sets.length + 1;
   const totalVolume = session.sets.reduce((sum, s) => sum + s.reps * s.weightKg, 0);
+
+  const lastSetByExercise: Record<string, { reps: number; weightKg: number }> = {};
+  for (const set of recentSets) {
+    if (!lastSetByExercise[set.exerciseId]) {
+      lastSetByExercise[set.exerciseId] = { reps: set.reps, weightKg: set.weightKg };
+    }
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -45,7 +58,12 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
 
       <Card>
         <SectionHeader icon={Plus} title="Add Set" />
-        <AddSetForm sessionId={session.id} exercises={exercises} nextSetNumber={nextSetNumber} />
+        <AddSetForm
+          sessionId={session.id}
+          exercises={exercises}
+          nextSetNumber={nextSetNumber}
+          lastSetByExercise={lastSetByExercise}
+        />
       </Card>
 
       <Card>

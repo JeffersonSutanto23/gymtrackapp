@@ -19,6 +19,15 @@ export const MEAL_TYPE_LABELS = {
   SNACK: "Snack",
 } as const;
 
+export const CARDIO_TYPE_LABELS = {
+  RUN: "Run",
+  TREADMILL: "Treadmill",
+  BIKE: "Bike",
+  SWIM: "Swim",
+  WALK: "Walk",
+  OTHER: "Other",
+} as const;
+
 export const MUSCLE_GROUP_LABELS = {
   CHEST: "Chest",
   BACK: "Back",

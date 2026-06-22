@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, TrendingUp } from "lucide-react";
 import { MUSCLE_GROUP_LABELS } from "@/lib/goals";
-import { BTN_PRIMARY, INPUT } from "@/lib/ui";
+import { BTN_PRIMARY, BTN_SECONDARY, INPUT } from "@/lib/ui";
 
 type Exercise = {
   id: string;
@@ -12,14 +12,27 @@ type Exercise = {
   muscleGroup: keyof typeof MUSCLE_GROUP_LABELS;
 };
 
+const TOP_REPS = 12;
+const BASE_REPS = 8;
+const WEIGHT_INCREMENT_KG = 2.5;
+
+function suggestNextSet(last: { reps: number; weightKg: number }) {
+  if (last.reps >= TOP_REPS) {
+    return { reps: BASE_REPS, weightKg: last.weightKg + WEIGHT_INCREMENT_KG };
+  }
+  return { reps: last.reps + 1, weightKg: last.weightKg };
+}
+
 export function AddSetForm({
   sessionId,
   exercises,
   nextSetNumber,
+  lastSetByExercise = {},
 }: {
   sessionId: string;
   exercises: Exercise[];
   nextSetNumber: number;
+  lastSetByExercise?: Record<string, { reps: number; weightKg: number }>;
 }) {
   const router = useRouter();
   const [exerciseId, setExerciseId] = useState(exercises[0]?.id ?? "");
@@ -28,6 +41,15 @@ export function AddSetForm({
   const [rpe, setRpe] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const lastSet = lastSetByExercise[exerciseId];
+  const suggestion = lastSet ? suggestNextSet(lastSet) : null;
+
+  function applySuggestion() {
+    if (!suggestion) return;
+    setReps(suggestion.reps);
+    setWeightKg(suggestion.weightKg);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,6 +95,21 @@ export function AddSetForm({
           ))}
         </select>
       </div>
+      {lastSet && suggestion && (
+        <div className="col-span-2 sm:col-span-3 flex flex-wrap items-center gap-2 text-xs text-neutral-500">
+          <span>
+            Last: {lastSet.reps} × {lastSet.weightKg} kg
+          </span>
+          <button
+            type="button"
+            onClick={applySuggestion}
+            className={`${BTN_SECONDARY} py-1 px-2 text-xs`}
+          >
+            <TrendingUp className="h-3.5 w-3.5" />
+            Use {suggestion.reps} × {suggestion.weightKg} kg
+          </button>
+        </div>
+      )}
       <div className="flex flex-col gap-1">
         <label className="text-xs font-medium text-neutral-500">Reps</label>
         <input

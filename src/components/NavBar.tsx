@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Utensils,
   Apple,
+  Activity,
   User,
   LogOut,
 } from "lucide-react";
@@ -21,6 +22,7 @@ const LINKS = [
   { href: "/progress", label: "Progress", icon: TrendingUp },
   { href: "/nutrition", label: "Nutrition", icon: Utensils },
   { href: "/foods", label: "Foods", icon: Apple },
+  { href: "/activity", label: "Activity", icon: Activity },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
@@ -43,7 +45,7 @@ export function NavBar({ userName }: { userName: string }) {
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-white">
                 <Flame className="h-4 w-4" />
               </span>
-              <span className="font-semibold tracking-tight text-neutral-900">Pumpwise</span>
+              <span className="font-semibold tracking-tight text-neutral-900">TrackPump</span>
             </Link>
             <nav className="hidden sm:flex gap-1">
               {LINKS.map((link) => {
@@ -78,7 +80,7 @@ export function NavBar({ userName }: { userName: string }) {
       </header>
 
       <nav
-        className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-7 border-t border-neutral-200 bg-white/90 backdrop-blur-md pb-[env(safe-area-inset-bottom)] sm:hidden"
+        className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-8 border-t border-neutral-200 bg-white/90 backdrop-blur-md pb-[env(safe-area-inset-bottom)] sm:hidden"
         aria-label="Primary"
       >
         {LINKS.map((link) => {
