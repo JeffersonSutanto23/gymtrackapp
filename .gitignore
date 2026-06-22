@@ -45,3 +45,6 @@ next-env.d.ts
 # sqlite database
 *.db
 *.db-journal
+
+# TWA / Android signing key (never commit)
+*.keystore
