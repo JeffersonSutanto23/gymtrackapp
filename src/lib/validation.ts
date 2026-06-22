@@ -1,0 +1,63 @@
+import { z } from "zod";
+
+export const registerSchema = z.object({
+  name: z.string().min(1).max(80),
+  email: z.string().email(),
+  password: z.string().min(8).max(100),
+});
+
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+export const profileSchema = z.object({
+  goal: z.enum(["CLEAN_BULK", "BULK", "CUT", "MAINTAIN"]),
+  heightCm: z.number().positive().optional().nullable(),
+  targetCalories: z.number().int().positive(),
+  targetProteinG: z.number().int().nonnegative(),
+  targetCarbsG: z.number().int().nonnegative(),
+  targetFatG: z.number().int().nonnegative(),
+});
+
+export const bodyWeightSchema = z.object({
+  weightKg: z.number().positive(),
+  loggedAt: z.string().optional(),
+  note: z.string().max(280).optional(),
+});
+
+export const workoutSessionSchema = z.object({
+  title: z.string().min(1).max(120),
+  startedAt: z.string().optional(),
+  notes: z.string().max(500).optional(),
+});
+
+export const workoutSetSchema = z.object({
+  exerciseId: z.string().min(1),
+  setNumber: z.number().int().positive(),
+  reps: z.number().int().positive(),
+  weightKg: z.number().nonnegative(),
+  rpe: z.number().min(1).max(10).optional().nullable(),
+});
+
+export const foodLogSchema = z.object({
+  foodId: z.string().min(1),
+  mealType: z.enum(["BREAKFAST", "LUNCH", "DINNER", "SNACK"]),
+  servings: z.number().positive(),
+  loggedAt: z.string().optional(),
+});
+
+export const customFoodSchema = z.object({
+  name: z.string().min(1).max(120),
+  brand: z.string().max(80).optional(),
+  category: z.string().min(1).max(60),
+  servingSize: z.number().positive(),
+  servingUnit: z.string().min(1).max(40),
+  calories: z.number().nonnegative(),
+  proteinG: z.number().nonnegative(),
+  carbsG: z.number().nonnegative(),
+  fatG: z.number().nonnegative(),
+  fiberG: z.number().nonnegative().optional(),
+  sugarG: z.number().nonnegative().optional(),
+  sodiumMg: z.number().nonnegative().optional(),
+});

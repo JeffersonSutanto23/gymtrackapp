@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Goal {
+  CLEAN_BULK
+  BULK
+  CUT
+  MAINTAIN
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+enum MuscleGroup {
+  CHEST
+  BACK
+  SHOULDERS
+  BICEPS
+  TRICEPS
+  LEGS
+  GLUTES
+  CALVES
+  CORE
+  FULL_BODY
+  CARDIO
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  profile         Profile?
+  bodyWeightLogs  BodyWeightLog[]
+  workoutSessions WorkoutSession[]
+  foodLogs        FoodLog[]
+  customFoods     Food[]
+}
+
+model Profile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal           Goal     @default(MAINTAIN)
+  heightCm       Float?
+  targetCalories Int      @default(2400)
+  targetProteinG Int      @default(180)
+  targetCarbsG   Int      @default(280)
+  targetFatG     Int      @default(80)
+  updatedAt      DateTime @updatedAt
+}
+
+model BodyWeightLog {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weightKg Float
+  loggedAt DateTime @default(now())
+  note     String?
+
+  @@index([userId, loggedAt])
+}
+
+model Exercise {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  muscleGroup MuscleGroup
+  equipment   String?
+  isCompound  Boolean     @default(false)
+
+  sets WorkoutSet[]
+}
+
+model WorkoutSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  startedAt DateTime @default(now())
+  notes     String?
+
+  sets WorkoutSet[]
+
+  @@index([userId, startedAt])
+}
+
+model WorkoutSet {
+  id         String         @id @default(cuid())
+  sessionId  String
+  session    WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   Exercise       @relation(fields: [exerciseId], references: [id])
+  setNumber  Int
+  reps       Int
+  weightKg   Float
+  rpe        Float?
+
+  @@index([sessionId])
+  @@index([exerciseId])
+}
+
+model Food {
+  id          String   @id @default(cuid())
+  name        String
+  brand       String?
+  category    String
+  servingSize Float
+  servingUnit String
+  calories    Float
+  proteinG    Float
+  carbsG      Float
+  fatG        Float
+  fiberG      Float    @default(0)
+  sugarG      Float    @default(0)
+  sodiumMg    Float    @default(0)
+  isCustom    Boolean  @default(false)
+  createdById String?
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+
+  logs FoodLog[]
+
+  @@index([name])
+  @@index([category])
+}
+
+model FoodLog {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  foodId   String
+  food     Food     @relation(fields: [foodId], references: [id])
+  mealType MealType
+  servings Float    @default(1)
+  loggedAt DateTime @default(now())
+
+  @@index([userId, loggedAt])
+}
