@@ -40,6 +40,16 @@ export const workoutSetSchema = z.object({
   rpe: z.number().min(1).max(10).optional().nullable(),
 });
 
+export const workoutSessionUpdateSchema = z.object({
+  title: z.string().min(1).max(120),
+});
+
+export const workoutSetUpdateSchema = z.object({
+  reps: z.number().int().positive(),
+  weightKg: z.number().nonnegative(),
+  rpe: z.number().min(1).max(10).optional().nullable(),
+});
+
 export const foodLogSchema = z.object({
   foodId: z.string().min(1),
   mealType: z.enum(["BREAKFAST", "LUNCH", "DINNER", "SNACK"]),

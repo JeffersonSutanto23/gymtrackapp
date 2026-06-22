@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { NewWorkoutForm } from "@/components/NewWorkoutForm";
+import { DeleteButton } from "@/components/DeleteButton";
 
 export default async function WorkoutsPage() {
   const user = await getCurrentUser();
@@ -31,22 +32,24 @@ export default async function WorkoutsPage() {
           sessions.map((session) => {
             const totalVolume = session.sets.reduce((sum, s) => sum + s.reps * s.weightKg, 0);
             return (
-              <Link
+              <div
                 key={session.id}
-                href={`/workouts/${session.id}`}
-                className="flex items-center justify-between rounded-xl border border-neutral-300 bg-neutral-50 px-4 py-3 hover:border-emerald-600/50 transition-colors"
+                className="flex items-center justify-between gap-3 rounded-xl border border-neutral-300 bg-neutral-50 px-4 py-3 hover:border-emerald-600/50 transition-colors"
               >
-                <div>
-                  <p className="font-medium">{session.title}</p>
-                  <p className="text-sm text-neutral-600">
-                    {new Date(session.startedAt).toLocaleString()}
-                  </p>
-                </div>
-                <div className="text-right text-sm text-neutral-600">
-                  <p>{session.sets.length} sets</p>
-                  <p>{Math.round(totalVolume)} kg volume</p>
-                </div>
-              </Link>
+                <Link href={`/workouts/${session.id}`} className="flex flex-1 items-center justify-between gap-3">
+                  <div>
+                    <p className="font-medium">{session.title}</p>
+                    <p className="text-sm text-neutral-600">
+                      {new Date(session.startedAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-right text-sm text-neutral-600">
+                    <p>{session.sets.length} sets</p>
+                    <p>{Math.round(totalVolume)} kg volume</p>
+                  </div>
+                </Link>
+                <DeleteButton endpoint={`/api/workouts/${session.id}`} />
+              </div>
             );
           })
         )}
