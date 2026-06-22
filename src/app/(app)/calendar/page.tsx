@@ -1,9 +1,21 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Dumbbell, Scale, Utensils } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Dumbbell,
+  Scale,
+  Utensils,
+  Activity,
+  Moon,
+  GlassWater,
+} from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
-import { GOAL_PRESETS } from "@/lib/goals";
+import { GOAL_PRESETS, CARDIO_TYPE_LABELS } from "@/lib/goals";
+import { sleepHours, formatTime } from "@/lib/sleep";
 import { MacroBar } from "@/components/MacroBar";
 import { CalendarDateJump } from "@/components/CalendarDateJump";
 import { Card } from "@/components/ui/Card";
@@ -58,57 +70,96 @@ export default async function CalendarPage({
   const dayEnd = new Date(dayStart);
   dayEnd.setDate(dayEnd.getDate() + 1);
 
-  const [profile, monthFoodLogs, monthSessions, monthWeightLogs, dayFoodLogs, daySessions, dayWeightLog] =
-    await Promise.all([
-      prisma.profile.findUnique({ where: { userId: user!.id } }),
-      prisma.foodLog.findMany({
-        where: { userId: user!.id, loggedAt: { gte: monthStart, lt: monthEnd } },
-        include: { food: true },
-      }),
-      prisma.workoutSession.findMany({
-        where: { userId: user!.id, startedAt: { gte: monthStart, lt: monthEnd } },
-        include: { sets: true },
-      }),
-      prisma.bodyWeightLog.findMany({
-        where: { userId: user!.id, loggedAt: { gte: monthStart, lt: monthEnd } },
-      }),
-      prisma.foodLog.findMany({
-        where: { userId: user!.id, loggedAt: { gte: dayStart, lt: dayEnd } },
-        include: { food: true },
-        orderBy: { loggedAt: "asc" },
-      }),
-      prisma.workoutSession.findMany({
-        where: { userId: user!.id, startedAt: { gte: dayStart, lt: dayEnd } },
-        include: { sets: true },
-        orderBy: { startedAt: "asc" },
-      }),
-      prisma.bodyWeightLog.findFirst({
-        where: { userId: user!.id, loggedAt: { gte: dayStart, lt: dayEnd } },
-        orderBy: { loggedAt: "desc" },
-      }),
-    ]);
+  const [
+    profile,
+    monthFoodLogs,
+    monthSessions,
+    monthWeightLogs,
+    monthCardioLogs,
+    monthSleepLogs,
+    monthWaterLogs,
+    dayFoodLogs,
+    daySessions,
+    dayWeightLog,
+    dayCardioLogs,
+    daySleepLogs,
+    dayWaterLogs,
+  ] = await Promise.all([
+    prisma.profile.findUnique({ where: { userId: user!.id } }),
+    prisma.foodLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: monthStart, lt: monthEnd } },
+      include: { food: true },
+    }),
+    prisma.workoutSession.findMany({
+      where: { userId: user!.id, startedAt: { gte: monthStart, lt: monthEnd } },
+      include: { sets: true },
+    }),
+    prisma.bodyWeightLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: monthStart, lt: monthEnd } },
+    }),
+    prisma.cardioLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: monthStart, lt: monthEnd } },
+    }),
+    prisma.sleepLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: monthStart, lt: monthEnd } },
+    }),
+    prisma.waterLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: monthStart, lt: monthEnd } },
+    }),
+    prisma.foodLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: dayStart, lt: dayEnd } },
+      include: { food: true },
+      orderBy: { loggedAt: "asc" },
+    }),
+    prisma.workoutSession.findMany({
+      where: { userId: user!.id, startedAt: { gte: dayStart, lt: dayEnd } },
+      include: { sets: true },
+      orderBy: { startedAt: "asc" },
+    }),
+    prisma.bodyWeightLog.findFirst({
+      where: { userId: user!.id, loggedAt: { gte: dayStart, lt: dayEnd } },
+      orderBy: { loggedAt: "desc" },
+    }),
+    prisma.cardioLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: dayStart, lt: dayEnd } },
+      orderBy: { loggedAt: "asc" },
+    }),
+    prisma.sleepLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: dayStart, lt: dayEnd } },
+      orderBy: { loggedAt: "asc" },
+    }),
+    prisma.waterLog.findMany({
+      where: { userId: user!.id, loggedAt: { gte: dayStart, lt: dayEnd } },
+    }),
+  ]);
 
   const dayIndex = new Map<
     string,
-    { calories: number; workoutCount: number; hasWeight: boolean }
+    { calories: number; workoutCount: number; hasWeight: boolean; hasActivity: boolean }
   >();
 
   for (const log of monthFoodLogs) {
     const key = dateKey(new Date(log.loggedAt));
-    const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false };
+    const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false, hasActivity: false };
     entry.calories += log.food.calories * log.servings;
     dayIndex.set(key, entry);
   }
   for (const session of monthSessions) {
     const key = dateKey(new Date(session.startedAt));
-    const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false };
+    const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false, hasActivity: false };
     entry.workoutCount += 1;
     dayIndex.set(key, entry);
   }
   for (const log of monthWeightLogs) {
     const key = dateKey(new Date(log.loggedAt));
-    const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false };
+    const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false, hasActivity: false };
     entry.hasWeight = true;
+    dayIndex.set(key, entry);
+  }
+  for (const log of [...monthCardioLogs, ...monthSleepLogs, ...monthWaterLogs]) {
+    const key = dateKey(new Date(log.loggedAt));
+    const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false, hasActivity: false };
+    entry.hasActivity = true;
     dayIndex.set(key, entry);
   }
 
@@ -184,6 +235,7 @@ export default async function CalendarPage({
                   {entry?.workoutCount ? <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> : null}
                   {entry?.calories ? <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> : null}
                   {entry?.hasWeight ? <span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> : null}
+                  {entry?.hasActivity ? <span className="w-1.5 h-1.5 rounded-full bg-purple-400" /> : null}
                 </span>
               </Link>
             );
@@ -199,6 +251,9 @@ export default async function CalendarPage({
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> Weight
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" /> Activity
           </span>
         </div>
       </Card>
@@ -265,6 +320,65 @@ export default async function CalendarPage({
               </p>
             ) : (
               <p className="text-sm text-neutral-500">No weight logged this day.</p>
+            )}
+          </div>
+        </div>
+
+        <h3 className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 mt-6 mb-3">
+          <Activity className="h-3.5 w-3.5" /> Activity
+        </h3>
+        <div className="grid sm:grid-cols-3 gap-6">
+          <div>
+            <h4 className="flex items-center gap-1.5 text-xs font-medium text-neutral-400 mb-2">
+              <Activity className="h-3 w-3" /> Cardio
+            </h4>
+            {dayCardioLogs.length === 0 ? (
+              <p className="text-sm text-neutral-500">No cardio logged this day.</p>
+            ) : (
+              <ul className="flex flex-col gap-1">
+                {dayCardioLogs.map((log) => (
+                  <li key={log.id} className="text-sm">
+                    <span className="font-medium">{CARDIO_TYPE_LABELS[log.activity]}</span>{" "}
+                    <span className="text-neutral-500">
+                      {log.durationMin} min{log.distanceKm ? ` · ${log.distanceKm} km` : ""}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div>
+            <h4 className="flex items-center gap-1.5 text-xs font-medium text-neutral-400 mb-2">
+              <Moon className="h-3 w-3" /> Sleep
+            </h4>
+            {daySleepLogs.length === 0 ? (
+              <p className="text-sm text-neutral-500">No sleep logged this day.</p>
+            ) : (
+              <ul className="flex flex-col gap-1">
+                {daySleepLogs.map((log) => (
+                  <li key={log.id} className="text-sm">
+                    <span className="font-medium">{round(sleepHours(log.bedTime, log.wakeTime), 1)} h</span>{" "}
+                    <span className="text-neutral-500">
+                      {formatTime(log.bedTime)} – {formatTime(log.wakeTime)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div>
+            <h4 className="flex items-center gap-1.5 text-xs font-medium text-neutral-400 mb-2">
+              <GlassWater className="h-3 w-3" /> Water
+            </h4>
+            {dayWaterLogs.length === 0 ? (
+              <p className="text-sm text-neutral-500">No water logged this day.</p>
+            ) : (
+              <p className="text-sm">
+                <span className="font-medium">{dayWaterLogs.reduce((sum, log) => sum + log.glasses, 0)}</span>{" "}
+                <span className="text-neutral-500">glasses</span>
+              </p>
             )}
           </div>
         </div>
