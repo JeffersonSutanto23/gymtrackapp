@@ -1,9 +1,9 @@
 import { PrismaClient } from "../src/generated/prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 import foods from "../src/data/foods.json";
 import exercises from "../src/data/exercises.json";
 
-const adapter = new PrismaBetterSqlite3({
+const adapter = new PrismaLibSql({
   url: process.env.DATABASE_URL ?? "file:./dev.db",
 });
 const prisma = new PrismaClient({ adapter });
