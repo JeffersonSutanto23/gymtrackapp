@@ -34,7 +34,7 @@ export function NewWorkoutForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
       <input
         type="text"
         required
@@ -43,7 +43,7 @@ export function NewWorkoutForm() {
         onChange={(e) => setTitle(e.target.value)}
         className={`flex-1 ${INPUT}`}
       />
-      <button type="submit" disabled={loading} className={`${BTN_PRIMARY} whitespace-nowrap`}>
+      <button type="submit" disabled={loading} className={`${BTN_PRIMARY} w-full sm:w-auto whitespace-nowrap`}>
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
         {loading ? "Creating..." : "Start Workout"}
       </button>

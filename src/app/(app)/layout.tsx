@@ -9,7 +9,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex flex-col flex-1">
       <NavBar userName={user.name} />
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-6">{children}</main>
+      <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-6 pb-24 sm:pb-6">{children}</main>
     </div>
   );
 }

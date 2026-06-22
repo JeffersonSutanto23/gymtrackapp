@@ -25,7 +25,7 @@ export function BodyWeightForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-2">
+    <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-2">
       <label className="flex flex-col gap-1 text-sm font-medium text-neutral-700">
         Weight (kg)
         <input
