@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2, Plus, Search } from "lucide-react";
 import { MEAL_TYPE_LABELS } from "@/lib/goals";
+import { BTN_PRIMARY, INPUT } from "@/lib/ui";
 
 type Food = {
   id: string;
@@ -68,31 +70,34 @@ export function FoodSearchPicker({ date }: { date: string }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <input
-        type="text"
-        placeholder="Search foods (e.g. chicken, rice, banana)..."
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setSelected(null);
-        }}
-        className="rounded-md bg-white border border-neutral-300 px-3 py-2 outline-none focus:border-emerald-500"
-      />
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+        <input
+          type="text"
+          placeholder="Search foods (e.g. chicken, rice, banana)..."
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setSelected(null);
+          }}
+          className={`${INPUT} w-full pl-9`}
+        />
+      </div>
 
       {!selected && results.length > 0 && (
-        <ul className="flex flex-col gap-1 max-h-64 overflow-y-auto rounded-md border border-neutral-300">
+        <ul className="flex flex-col gap-1 max-h-64 overflow-y-auto rounded-lg border border-neutral-200">
           {results.map((food) => (
             <li key={food.id}>
               <button
                 type="button"
                 onClick={() => setSelected(food)}
-                className="w-full text-left px-3 py-2 hover:bg-neutral-100 transition-colors flex justify-between items-center"
+                className="w-full text-left px-3 py-2 hover:bg-neutral-50 transition-colors flex justify-between items-center"
               >
                 <span>
                   {food.name}
                   {food.brand && <span className="text-neutral-500"> · {food.brand}</span>}
                 </span>
-                <span className="text-xs text-neutral-600 whitespace-nowrap ml-2">
+                <span className="text-xs text-neutral-500 whitespace-nowrap ml-2">
                   {Math.round(food.calories)} kcal / {food.servingSize}{food.servingUnit === "g" ? "g" : ` ${food.servingUnit}`}
                 </span>
               </button>
@@ -102,28 +107,28 @@ export function FoodSearchPicker({ date }: { date: string }) {
       )}
 
       {selected && (
-        <form onSubmit={handleAdd} className="flex flex-wrap items-end gap-2 rounded-md border border-neutral-300 p-3">
+        <form onSubmit={handleAdd} className="flex flex-wrap items-end gap-2 rounded-lg border border-neutral-200 p-3">
           <div className="flex flex-col gap-1">
-            <span className="text-xs text-neutral-600">Food</span>
-            <span className="text-sm">{selected.name}</span>
+            <span className="text-xs font-medium text-neutral-500">Food</span>
+            <span className="text-sm font-medium text-neutral-900">{selected.name}</span>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-neutral-600">Servings</label>
+            <label className="text-xs font-medium text-neutral-500">Servings</label>
             <input
               type="number"
               min={0.25}
               step={0.25}
               value={servings}
               onChange={(e) => setServings(Number(e.target.value))}
-              className="w-24 rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+              className={`w-24 ${INPUT} py-1.5`}
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-neutral-600">Meal</label>
+            <label className="text-xs font-medium text-neutral-500">Meal</label>
             <select
               value={mealType}
               onChange={(e) => setMealType(e.target.value as keyof typeof MEAL_TYPE_LABELS)}
-              className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+              className={`${INPUT} py-1.5`}
             >
               {Object.entries(MEAL_TYPE_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>
@@ -132,18 +137,11 @@ export function FoodSearchPicker({ date }: { date: string }) {
               ))}
             </select>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 transition-colors px-3 py-1.5 text-sm font-medium"
-          >
+          <button type="submit" disabled={loading} className={BTN_PRIMARY}>
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
             {loading ? "Adding..." : "Add to diary"}
           </button>
-          <button
-            type="button"
-            onClick={() => setSelected(null)}
-            className="text-sm text-neutral-600 hover:text-neutral-900"
-          >
+          <button type="button" onClick={() => setSelected(null)} className="text-sm text-neutral-500 hover:text-neutral-900">
             Cancel
           </button>
         </form>

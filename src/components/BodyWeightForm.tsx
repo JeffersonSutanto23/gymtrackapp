@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2, Plus } from "lucide-react";
+import { BTN_PRIMARY, INPUT } from "@/lib/ui";
 
 export function BodyWeightForm() {
   const router = useRouter();
@@ -24,7 +26,7 @@ export function BodyWeightForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex items-end gap-2">
-      <label className="flex flex-col gap-1 text-sm text-neutral-600">
+      <label className="flex flex-col gap-1 text-sm font-medium text-neutral-700">
         Weight (kg)
         <input
           type="number"
@@ -32,14 +34,11 @@ export function BodyWeightForm() {
           step={0.1}
           value={weightKg}
           onChange={(e) => setWeightKg(Number(e.target.value))}
-          className="rounded-md bg-white border border-neutral-300 px-3 py-2 text-neutral-900 outline-none focus:border-emerald-500 w-32"
+          className={`w-32 ${INPUT}`}
         />
       </label>
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 transition-colors px-3 py-2 text-sm font-medium"
-      >
+      <button type="submit" disabled={loading} className={BTN_PRIMARY}>
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
         {loading ? "Saving..." : "Log weight"}
       </button>
     </form>

@@ -1,3 +1,4 @@
+import { Scale, Target, User } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { GOAL_PRESETS } from "@/lib/goals";
@@ -6,6 +7,9 @@ import { BodyWeightForm } from "@/components/BodyWeightForm";
 import { WeightChart } from "@/components/WeightChart";
 import { DeleteButton } from "@/components/DeleteButton";
 import { round } from "@/lib/nutrition";
+import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export default async function ProfilePage() {
   const user = await getCurrentUser();
@@ -25,20 +29,15 @@ export default async function ProfilePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold">Profile</h1>
-        <p className="text-neutral-600 text-sm mt-1">
-          {user!.name} · {user!.email}
-        </p>
-      </div>
+      <PageHeader icon={User} title="Profile" subtitle={`${user!.name} · ${user!.email}`} />
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <h2 className="font-semibold mb-4">Goal & Targets</h2>
+      <Card>
+        <SectionHeader icon={Target} title="Goal & Targets" />
         <ProfileForm initial={initial} />
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <h2 className="font-semibold mb-4">Body Weight</h2>
+      <Card>
+        <SectionHeader icon={Scale} title="Body Weight" />
         <BodyWeightForm />
         <div className="mt-4">
           <WeightChart data={chartData} />
@@ -47,16 +46,16 @@ export default async function ProfilePage() {
           <ul className="mt-4 flex flex-col gap-1 max-h-56 overflow-y-auto">
             {weightLogs.map((log) => (
               <li key={log.id} className="flex items-center justify-between text-sm py-1 border-b border-neutral-100">
-                <span>{new Date(log.loggedAt).toLocaleString()}</span>
+                <span className="text-neutral-500">{new Date(log.loggedAt).toLocaleString()}</span>
                 <span className="flex items-center gap-3">
-                  <span>{round(log.weightKg, 1)} kg</span>
+                  <span className="font-medium text-neutral-900">{round(log.weightKg, 1)} kg</span>
                   <DeleteButton endpoint={`/api/bodyweight/${log.id}`} />
                 </span>
               </li>
             ))}
           </ul>
         )}
-      </section>
+      </Card>
     </div>
   );
 }

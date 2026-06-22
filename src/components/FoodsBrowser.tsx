@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Loader2, Search } from "lucide-react";
 import { FOOD_CATEGORIES } from "@/lib/categories";
+import { INPUT, pillClass } from "@/lib/ui";
 
 type Food = {
   id: string;
@@ -39,45 +41,39 @@ export function FoodsBrowser() {
 
   return (
     <div className="flex flex-col gap-4">
-      <input
-        type="text"
-        placeholder="Search the food database..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="rounded-md bg-white border border-neutral-300 px-3 py-2 outline-none focus:border-emerald-500"
-      />
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+        <input
+          type="text"
+          placeholder="Search the food database..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className={`${INPUT} w-full pl-9`}
+        />
+      </div>
 
       <div className="flex flex-wrap gap-1.5">
-        <button
-          onClick={() => setCategory(null)}
-          className={`px-3 py-1 rounded-full text-xs transition-colors ${
-            category === null ? "bg-emerald-600 text-white" : "bg-white border border-neutral-300 text-neutral-600"
-          }`}
-        >
+        <button onClick={() => setCategory(null)} className={pillClass(category === null)}>
           All
         </button>
         {FOOD_CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setCategory(cat)}
-            className={`px-3 py-1 rounded-full text-xs transition-colors ${
-              category === cat ? "bg-emerald-600 text-white" : "bg-white border border-neutral-300 text-neutral-600"
-            }`}
-          >
+          <button key={cat} onClick={() => setCategory(cat)} className={pillClass(category === cat)}>
             {cat}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <p className="text-sm text-neutral-500">Loading...</p>
+        <p className="flex items-center gap-2 text-sm text-neutral-500">
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading...
+        </p>
       ) : foods.length === 0 ? (
         <p className="text-sm text-neutral-500">No foods found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-neutral-300">
+        <div className="overflow-x-auto rounded-lg border border-neutral-200">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-neutral-600 bg-neutral-50">
+              <tr className="text-left text-neutral-500 bg-neutral-50">
                 <th className="py-2 px-3">Name</th>
                 <th className="py-2 px-3">Serving</th>
                 <th className="py-2 px-3">Cal</th>
@@ -89,11 +85,11 @@ export function FoodsBrowser() {
             <tbody>
               {foods.map((food) => (
                 <tr key={food.id} className="border-t border-neutral-100">
-                  <td className="py-2 px-3">
+                  <td className="py-2 px-3 font-medium text-neutral-900">
                     {food.name}
-                    {food.isCustom && <span className="ml-2 text-xs text-emerald-600">custom</span>}
+                    {food.isCustom && <span className="ml-2 text-xs font-normal text-emerald-600">custom</span>}
                   </td>
-                  <td className="py-2 px-3 text-neutral-600">
+                  <td className="py-2 px-3 text-neutral-500">
                     {food.servingSize}{food.servingUnit === "g" ? "g" : ` ${food.servingUnit}`}
                   </td>
                   <td className="py-2 px-3">{Math.round(food.calories)}</td>

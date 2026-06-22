@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ICON_BTN, INPUT } from "@/lib/ui";
 
 function shiftDate(date: string, days: number) {
   const d = new Date(date);
@@ -15,23 +17,23 @@ export function DateNav({ date }: { date: string }) {
     <div className="flex items-center gap-2">
       <button
         onClick={() => router.push(`/nutrition?date=${shiftDate(date, -1)}`)}
-        className="rounded-md border border-neutral-300 px-2 py-1.5 hover:bg-neutral-100 transition-colors"
+        className={ICON_BTN}
         aria-label="Previous day"
       >
-        ←
+        <ChevronLeft className="h-4 w-4" />
       </button>
       <input
         type="date"
         value={date}
         onChange={(e) => router.push(`/nutrition?date=${e.target.value}`)}
-        className="rounded-md bg-white border border-neutral-300 px-3 py-1.5 outline-none focus:border-emerald-500"
+        className={`${INPUT} py-1.5`}
       />
       <button
         onClick={() => router.push(`/nutrition?date=${shiftDate(date, 1)}`)}
-        className="rounded-md border border-neutral-300 px-2 py-1.5 hover:bg-neutral-100 transition-colors"
+        className={ICON_BTN}
         aria-label="Next day"
       >
-        →
+        <ChevronRight className="h-4 w-4" />
       </button>
     </div>
   );

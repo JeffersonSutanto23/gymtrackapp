@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2, Play } from "lucide-react";
+import { BTN_PRIMARY, INPUT } from "@/lib/ui";
 
 export function NewWorkoutForm() {
   const router = useRouter();
@@ -39,13 +41,10 @@ export function NewWorkoutForm() {
         placeholder="e.g. Push Day"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="flex-1 rounded-md bg-white border border-neutral-300 px-3 py-2 outline-none focus:border-emerald-500"
+        className={`flex-1 ${INPUT}`}
       />
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 transition-colors px-4 py-2 font-medium whitespace-nowrap"
-      >
+      <button type="submit" disabled={loading} className={`${BTN_PRIMARY} whitespace-nowrap`}>
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
         {loading ? "Creating..." : "Start Workout"}
       </button>
       {error && <p className="text-sm text-red-600">{error}</p>}

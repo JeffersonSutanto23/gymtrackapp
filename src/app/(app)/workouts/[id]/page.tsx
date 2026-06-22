@@ -1,11 +1,15 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { ChevronLeft, ListChecks, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { AddSetForm } from "@/components/AddSetForm";
 import { DeleteButton } from "@/components/DeleteButton";
 import { EditSessionTitle } from "@/components/EditSessionTitle";
 import { SetRow } from "@/components/SetRow";
+import { Card } from "@/components/ui/Card";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default async function WorkoutDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -26,33 +30,33 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <Link href="/workouts" className="text-sm text-emerald-600 hover:underline">
-            ← All workouts
+          <Link href="/workouts" className="flex items-center gap-1 text-sm text-emerald-600 hover:underline">
+            <ChevronLeft className="h-3.5 w-3.5" /> All workouts
           </Link>
           <EditSessionTitle sessionId={session.id} title={session.title} />
-          <p className="text-neutral-600 text-sm">
+          <p className="text-sm text-neutral-500">
             {new Date(session.startedAt).toLocaleString()} · {session.sets.length} sets · {Math.round(totalVolume)} kg volume
           </p>
         </div>
         <DeleteButton endpoint={`/api/workouts/${session.id}`} redirectTo="/workouts" label="Delete session" />
       </div>
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <h2 className="font-semibold mb-3">Add Set</h2>
+      <Card>
+        <SectionHeader icon={Plus} title="Add Set" />
         <AddSetForm sessionId={session.id} exercises={exercises} nextSetNumber={nextSetNumber} />
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <h2 className="font-semibold mb-3">Sets</h2>
+      <Card>
+        <SectionHeader icon={ListChecks} title="Sets" />
         {session.sets.length === 0 ? (
-          <p className="text-sm text-neutral-500">No sets logged yet.</p>
+          <EmptyState icon={ListChecks} message="No sets logged yet." />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-neutral-600 border-b border-neutral-300">
+                <tr className="text-left text-neutral-500 border-b border-neutral-200">
                   <th className="py-2 pr-2">#</th>
                   <th className="py-2 pr-2">Exercise</th>
                   <th className="py-2 pr-2">Muscle</th>
@@ -70,7 +74,7 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
             </table>
           </div>
         )}
-      </section>
+      </Card>
     </div>
   );
 }

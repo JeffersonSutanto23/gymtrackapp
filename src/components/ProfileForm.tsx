@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Check, Loader2, Save } from "lucide-react";
 import { GOAL_LABELS, GOAL_PRESETS } from "@/lib/goals";
+import { BTN_PRIMARY, INPUT, pillClass } from "@/lib/ui";
 
 type Goal = keyof typeof GOAL_LABELS;
 
@@ -56,17 +58,10 @@ export function ProfileForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-neutral-600">Goal</label>
+        <label className="text-sm font-medium text-neutral-700">Goal</label>
         <div className="flex flex-wrap gap-2">
           {Object.entries(GOAL_LABELS).map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => applyPreset(value as Goal)}
-              className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
-                goal === value ? "bg-emerald-600 text-white" : "bg-white border border-neutral-300 text-neutral-600"
-              }`}
-            >
+            <button key={value} type="button" onClick={() => applyPreset(value as Goal)} className={pillClass(goal === value)}>
               {label}
             </button>
           ))}
@@ -83,14 +78,15 @@ export function ProfileForm({
       </div>
 
       <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 transition-colors px-4 py-2 font-medium"
-        >
+        <button type="submit" disabled={loading} className={BTN_PRIMARY}>
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {loading ? "Saving..." : "Save profile"}
         </button>
-        {saved && <span className="text-sm text-emerald-600">Saved!</span>}
+        {saved && (
+          <span className="flex items-center gap-1 text-sm text-emerald-600">
+            <Check className="h-4 w-4" /> Saved!
+          </span>
+        )}
       </div>
     </form>
   );
@@ -106,15 +102,9 @@ function NumberField({
   onChange: (v: number) => void;
 }) {
   return (
-    <label className="flex flex-col gap-1 text-sm text-neutral-600">
+    <label className="flex flex-col gap-1 text-sm font-medium text-neutral-700">
       {label}
-      <input
-        type="number"
-        min={0}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="rounded-md bg-white border border-neutral-300 px-3 py-2 text-neutral-900 outline-none focus:border-emerald-500"
-      />
+      <input type="number" min={0} value={value} onChange={(e) => onChange(Number(e.target.value))} className={INPUT} />
     </label>
   );
 }

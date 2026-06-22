@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Check, Loader2, Pencil, X } from "lucide-react";
 import { DeleteButton } from "@/components/DeleteButton";
 import { MUSCLE_GROUP_LABELS } from "@/lib/goals";
+import { INPUT } from "@/lib/ui";
 
 type Set = {
   id: string;
@@ -41,16 +43,16 @@ export function SetRow({ set }: { set: Set }) {
   if (editing) {
     return (
       <tr className="border-b border-neutral-100">
-        <td className="py-2 pr-2">{set.setNumber}</td>
-        <td className="py-2 pr-2">{set.exercise.name}</td>
-        <td className="py-2 pr-2 text-neutral-600">{MUSCLE_GROUP_LABELS[set.exercise.muscleGroup]}</td>
+        <td className="py-2 pr-2 text-neutral-500">{set.setNumber}</td>
+        <td className="py-2 pr-2 font-medium">{set.exercise.name}</td>
+        <td className="py-2 pr-2 text-neutral-500">{MUSCLE_GROUP_LABELS[set.exercise.muscleGroup]}</td>
         <td className="py-2 pr-2">
           <input
             type="number"
             min={1}
             value={reps}
             onChange={(e) => setReps(Number(e.target.value))}
-            className="w-16 rounded-md bg-white border border-neutral-300 px-2 py-1 text-sm outline-none focus:border-emerald-500"
+            className={`w-16 ${INPUT} py-1`}
           />
         </td>
         <td className="py-2 pr-2">
@@ -60,7 +62,7 @@ export function SetRow({ set }: { set: Set }) {
             step={0.5}
             value={weightKg}
             onChange={(e) => setWeightKg(Number(e.target.value))}
-            className="w-20 rounded-md bg-white border border-neutral-300 px-2 py-1 text-sm outline-none focus:border-emerald-500"
+            className={`w-20 ${INPUT} py-1`}
           />
         </td>
         <td className="py-2 pr-2">
@@ -71,15 +73,24 @@ export function SetRow({ set }: { set: Set }) {
             step={0.5}
             value={rpe}
             onChange={(e) => setRpe(e.target.value)}
-            className="w-14 rounded-md bg-white border border-neutral-300 px-2 py-1 text-sm outline-none focus:border-emerald-500"
+            className={`w-14 ${INPUT} py-1`}
           />
         </td>
         <td className="py-2 pr-2 whitespace-nowrap">
-          <button onClick={handleSave} disabled={loading} className="text-xs text-emerald-600 hover:underline disabled:opacity-50 mr-2">
-            {loading ? "..." : "Save"}
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            aria-label="Save"
+            className="mr-1 inline-flex h-7 w-7 items-center justify-center rounded-lg text-emerald-600 transition-colors hover:bg-emerald-50 disabled:opacity-50"
+          >
+            {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
           </button>
-          <button onClick={() => setEditing(false)} className="text-xs text-neutral-500 hover:underline">
-            Cancel
+          <button
+            onClick={() => setEditing(false)}
+            aria-label="Cancel"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+          >
+            <X className="h-3.5 w-3.5" />
           </button>
         </td>
       </tr>
@@ -88,19 +99,23 @@ export function SetRow({ set }: { set: Set }) {
 
   return (
     <tr className="border-b border-neutral-100">
-      <td className="py-2 pr-2">{set.setNumber}</td>
-      <td className="py-2 pr-2">
+      <td className="py-2 pr-2 text-neutral-500">{set.setNumber}</td>
+      <td className="py-2 pr-2 font-medium">
         <Link href={`/progress?exerciseId=${set.exerciseId}`} className="hover:text-emerald-600">
           {set.exercise.name}
         </Link>
       </td>
-      <td className="py-2 pr-2 text-neutral-600">{MUSCLE_GROUP_LABELS[set.exercise.muscleGroup]}</td>
+      <td className="py-2 pr-2 text-neutral-500">{MUSCLE_GROUP_LABELS[set.exercise.muscleGroup]}</td>
       <td className="py-2 pr-2">{set.reps}</td>
       <td className="py-2 pr-2">{set.weightKg} kg</td>
       <td className="py-2 pr-2">{set.rpe ?? "—"}</td>
       <td className="py-2 pr-2 whitespace-nowrap">
-        <button onClick={() => setEditing(true)} className="text-xs text-neutral-500 hover:text-neutral-700 mr-2">
-          Edit
+        <button
+          onClick={() => setEditing(true)}
+          aria-label="Edit"
+          className="mr-1 inline-flex h-7 w-7 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+        >
+          <Pencil className="h-3.5 w-3.5" />
         </button>
         <DeleteButton endpoint={`/api/workout-sets/${set.id}`} />
       </td>

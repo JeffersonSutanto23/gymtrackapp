@@ -1,10 +1,15 @@
 import Link from "next/link";
+import { LayoutDashboard, Utensils, Scale, Dumbbell, ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
 import { GOAL_LABELS, GOAL_PRESETS } from "@/lib/goals";
 import { MacroBar } from "@/components/MacroBar";
 import { WeightChart } from "@/components/WeightChart";
+import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -44,40 +49,49 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-neutral-600 text-sm mt-1">
-          Goal: <span className="text-emerald-600">{GOAL_LABELS[targets.goal]}</span>
-        </p>
-      </div>
+      <PageHeader
+        icon={LayoutDashboard}
+        title="Dashboard"
+        subtitle={
+          <>
+            Goal: <span className="font-medium text-emerald-600">{GOAL_LABELS[targets.goal]}</span>
+          </>
+        }
+      />
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold">Today&apos;s Nutrition</h2>
-            <Link href="/nutrition" className="text-sm text-emerald-600 hover:underline">
-              Log food →
-            </Link>
-          </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Card>
+          <SectionHeader
+            icon={Utensils}
+            title="Today's Nutrition"
+            action={
+              <Link href="/nutrition" className="flex items-center gap-1 text-sm text-emerald-600 hover:underline">
+                Log food <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            }
+          />
           <div className="flex flex-col gap-3">
             <MacroBar label="Calories" current={totals.calories} target={targets.targetCalories} unit="kcal" color="#34d399" />
             <MacroBar label="Protein" current={totals.proteinG} target={targets.targetProteinG} color="#60a5fa" />
             <MacroBar label="Carbs" current={totals.carbsG} target={targets.targetCarbsG} color="#fbbf24" />
             <MacroBar label="Fat" current={totals.fatG} target={targets.targetFatG} color="#f472b6" />
           </div>
-        </section>
+        </Card>
 
-        <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold">Body Weight</h2>
-            <Link href="/profile" className="text-sm text-emerald-600 hover:underline">
-              Log weight →
-            </Link>
-          </div>
+        <Card>
+          <SectionHeader
+            icon={Scale}
+            title="Body Weight"
+            action={
+              <Link href="/profile" className="flex items-center gap-1 text-sm text-emerald-600 hover:underline">
+                Log weight <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            }
+          />
           {latestWeight ? (
-            <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-3xl font-bold">{round(latestWeight.weightKg, 1)}</span>
-              <span className="text-neutral-600">kg</span>
+            <div className="mb-2 flex items-baseline gap-2">
+              <span className="text-3xl font-semibold tracking-tight">{round(latestWeight.weightKg, 1)}</span>
+              <span className="text-neutral-500">kg</span>
               {weightDelta !== null && (
                 <span className={`text-sm ${weightDelta >= 0 ? "text-emerald-600" : "text-red-600"}`}>
                   {weightDelta >= 0 ? "+" : ""}
@@ -86,31 +100,34 @@ export default async function DashboardPage() {
               )}
             </div>
           ) : (
-            <p className="text-sm text-neutral-500 mb-2">No weight logged yet.</p>
+            <p className="mb-2 text-sm text-neutral-500">No weight logged yet.</p>
           )}
           <WeightChart data={chartData} />
-        </section>
+        </Card>
       </div>
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold">Recent Workouts</h2>
-          <Link href="/workouts" className="text-sm text-emerald-600 hover:underline">
-            View all →
-          </Link>
-        </div>
+      <Card>
+        <SectionHeader
+          icon={Dumbbell}
+          title="Recent Workouts"
+          action={
+            <Link href="/workouts" className="flex items-center gap-1 text-sm text-emerald-600 hover:underline">
+              View all <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          }
+        />
         {recentSessions.length === 0 ? (
-          <p className="text-sm text-neutral-500">No workouts logged yet.</p>
+          <EmptyState icon={Dumbbell} message="No workouts logged yet." />
         ) : (
-          <ul className="flex flex-col gap-2">
+          <ul className="flex flex-col gap-1">
             {recentSessions.map((session) => (
               <li key={session.id}>
                 <Link
                   href={`/workouts/${session.id}`}
-                  className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-neutral-100 transition-colors"
+                  className="flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-neutral-50"
                 >
-                  <span>{session.title}</span>
-                  <span className="text-sm text-neutral-600">
+                  <span className="font-medium">{session.title}</span>
+                  <span className="text-sm text-neutral-500">
                     {new Date(session.startedAt).toLocaleDateString()} · {session.sets.length} sets
                   </span>
                 </Link>
@@ -118,7 +135,7 @@ export default async function DashboardPage() {
             ))}
           </ul>
         )}
-      </section>
+      </Card>
     </div>
   );
 }

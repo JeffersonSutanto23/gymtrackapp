@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2, Plus } from "lucide-react";
 import { MUSCLE_GROUP_LABELS } from "@/lib/goals";
+import { BTN_PRIMARY, INPUT } from "@/lib/ui";
 
 type Exercise = {
   id: string;
@@ -58,11 +60,11 @@ export function AddSetForm({
   return (
     <form onSubmit={handleSubmit} className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-end">
       <div className="flex flex-col gap-1 col-span-2 sm:col-span-2">
-        <label className="text-xs text-neutral-600">Exercise</label>
+        <label className="text-xs font-medium text-neutral-500">Exercise</label>
         <select
           value={exerciseId}
           onChange={(e) => setExerciseId(e.target.value)}
-          className="rounded-md bg-white border border-neutral-300 px-2 py-2 text-sm outline-none focus:border-emerald-500"
+          className={`${INPUT} py-2`}
         >
           {exercises.map((ex) => (
             <option key={ex.id} value={ex.id}>
@@ -72,18 +74,18 @@ export function AddSetForm({
         </select>
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-600">Reps</label>
+        <label className="text-xs font-medium text-neutral-500">Reps</label>
         <input
           type="number"
           min={1}
           required
           value={reps}
           onChange={(e) => setReps(Number(e.target.value))}
-          className="rounded-md bg-white border border-neutral-300 px-2 py-2 text-sm outline-none focus:border-emerald-500"
+          className={`${INPUT} py-2`}
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-600">Weight (kg)</label>
+        <label className="text-xs font-medium text-neutral-500">Weight (kg)</label>
         <input
           type="number"
           min={0}
@@ -91,11 +93,11 @@ export function AddSetForm({
           required
           value={weightKg}
           onChange={(e) => setWeightKg(Number(e.target.value))}
-          className="rounded-md bg-white border border-neutral-300 px-2 py-2 text-sm outline-none focus:border-emerald-500"
+          className={`${INPUT} py-2`}
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-600">RPE</label>
+        <label className="text-xs font-medium text-neutral-500">RPE</label>
         <input
           type="number"
           min={1}
@@ -104,14 +106,11 @@ export function AddSetForm({
           value={rpe}
           onChange={(e) => setRpe(e.target.value)}
           placeholder="optional"
-          className="rounded-md bg-white border border-neutral-300 px-2 py-2 text-sm outline-none focus:border-emerald-500"
+          className={`${INPUT} py-2`}
         />
       </div>
-      <button
-        type="submit"
-        disabled={loading}
-        className="col-span-2 sm:col-span-5 rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 transition-colors px-3 py-2 text-sm font-medium"
-      >
+      <button type="submit" disabled={loading} className={`col-span-2 sm:col-span-5 ${BTN_PRIMARY}`}>
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
         {loading ? "Adding..." : `Add Set #${nextSetNumber}`}
       </button>
       {error && <p className="text-sm text-red-600 col-span-full">{error}</p>}

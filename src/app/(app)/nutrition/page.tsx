@@ -1,3 +1,4 @@
+import { Camera, Search, Utensils } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
@@ -7,6 +8,10 @@ import { FoodSearchPicker } from "@/components/FoodSearchPicker";
 import { FoodPhotoAnalyzer } from "@/components/FoodPhotoAnalyzer";
 import { DateNav } from "@/components/DateNav";
 import { DeleteButton } from "@/components/DeleteButton";
+import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
@@ -46,45 +51,39 @@ export default async function NutritionPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">Nutrition</h1>
-          <p className="text-neutral-600 text-sm mt-1">Log meals and track macros for the day.</p>
-        </div>
-        <DateNav date={date} />
-      </div>
+      <PageHeader icon={Utensils} title="Nutrition" subtitle="Log meals and track macros for the day." action={<DateNav date={date} />} />
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <h2 className="font-semibold mb-3">Daily Totals</h2>
+      <Card>
+        <SectionHeader title="Daily Totals" />
         <div className="flex flex-col gap-3">
           <MacroBar label="Calories" current={totals.calories} target={targets.targetCalories} unit="kcal" color="#34d399" />
           <MacroBar label="Protein" current={totals.proteinG} target={targets.targetProteinG} color="#60a5fa" />
           <MacroBar label="Carbs" current={totals.carbsG} target={targets.targetCarbsG} color="#fbbf24" />
           <MacroBar label="Fat" current={totals.fatG} target={targets.targetFatG} color="#f472b6" />
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <h2 className="font-semibold mb-3">Add Food</h2>
+      <Card>
+        <SectionHeader icon={Search} title="Add Food" />
         <FoodSearchPicker date={date} />
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <h2 className="font-semibold mb-3">Scan a Meal (AI)</h2>
-        <p className="text-sm text-neutral-600 mb-3">Take or upload a photo and get an AI nutrition estimate you can edit before logging.</p>
+      <Card>
+        <SectionHeader icon={Camera} title="Scan a Meal (AI)" className="mb-1" />
+        <p className="text-sm text-neutral-500 mb-3">Take or upload a photo and get an AI nutrition estimate you can edit before logging.</p>
         <FoodPhotoAnalyzer date={date} />
-      </section>
+      </Card>
 
       {byMeal.map(({ mealType, logs: mealLogs }) => {
         const mealTotals = computeFoodLogTotals(mealLogs);
         return (
-          <section key={mealType} className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold">{MEAL_TYPE_LABELS[mealType]}</h2>
-              <span className="text-sm text-neutral-600">{round(mealTotals.calories)} kcal</span>
-            </div>
+          <Card key={mealType}>
+            <SectionHeader
+              title={MEAL_TYPE_LABELS[mealType]}
+              action={<span className="text-sm text-neutral-500">{round(mealTotals.calories)} kcal</span>}
+            />
             {mealLogs.length === 0 ? (
-              <p className="text-sm text-neutral-500">Nothing logged.</p>
+              <EmptyState icon={Utensils} message="Nothing logged." />
             ) : (
               <ul className="flex flex-col gap-2">
                 {mealLogs.map((log) => (
@@ -97,14 +96,14 @@ export default async function NutritionPage({
                       </span>
                     </span>
                     <span className="flex items-center gap-3">
-                      <span className="text-neutral-600">{round(log.food.calories * log.servings)} kcal</span>
+                      <span className="text-neutral-500">{round(log.food.calories * log.servings)} kcal</span>
                       <DeleteButton endpoint={`/api/food-logs/${log.id}`} />
                     </span>
                   </li>
                 ))}
               </ul>
             )}
-          </section>
+          </Card>
         );
       })}
     </div>

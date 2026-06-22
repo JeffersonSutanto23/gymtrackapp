@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2, Plus, Save } from "lucide-react";
 import { FOOD_CATEGORIES } from "@/lib/categories";
+import { BTN_PRIMARY, BTN_SECONDARY, INPUT } from "@/lib/ui";
 
 const empty = {
   name: "",
@@ -52,31 +54,23 @@ export function CustomFoodForm() {
 
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        className="text-sm rounded-md border border-neutral-300 px-3 py-1.5 hover:bg-neutral-100 transition-colors"
-      >
-        + Add custom food
+      <button onClick={() => setOpen(true)} className={BTN_SECONDARY}>
+        <Plus className="h-4 w-4" /> Add custom food
       </button>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-md border border-neutral-300 p-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-4">
       <div className="grid sm:grid-cols-2 gap-3">
         <Field label="Name">
-          <input
-            required
-            value={form.name}
-            onChange={(e) => update("name", e.target.value)}
-            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
-          />
+          <input required value={form.name} onChange={(e) => update("name", e.target.value)} className={`${INPUT} py-1.5`} />
         </Field>
         <Field label="Brand (optional)">
-          <input value={form.brand} onChange={(e) => update("brand", e.target.value)} className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500" />
+          <input value={form.brand} onChange={(e) => update("brand", e.target.value)} className={`${INPUT} py-1.5`} />
         </Field>
         <Field label="Category">
-          <select value={form.category} onChange={(e) => update("category", e.target.value)} className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500">
+          <select value={form.category} onChange={(e) => update("category", e.target.value)} className={`${INPUT} py-1.5`}>
             {FOOD_CATEGORIES.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -90,7 +84,7 @@ export function CustomFoodForm() {
             value={form.servingUnit}
             onChange={(e) => update("servingUnit", e.target.value)}
             placeholder="g, cup, piece..."
-            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+            className={`${INPUT} py-1.5`}
           />
         </Field>
         <Field label="Serving size">
@@ -101,7 +95,7 @@ export function CustomFoodForm() {
             required
             value={form.servingSize}
             onChange={(e) => update("servingSize", Number(e.target.value))}
-            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+            className={`${INPUT} py-1.5`}
           />
         </Field>
         <Field label="Calories">
@@ -111,7 +105,7 @@ export function CustomFoodForm() {
             required
             value={form.calories}
             onChange={(e) => update("calories", Number(e.target.value))}
-            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+            className={`${INPUT} py-1.5`}
           />
         </Field>
         <Field label="Protein (g)">
@@ -122,7 +116,7 @@ export function CustomFoodForm() {
             required
             value={form.proteinG}
             onChange={(e) => update("proteinG", Number(e.target.value))}
-            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+            className={`${INPUT} py-1.5`}
           />
         </Field>
         <Field label="Carbs (g)">
@@ -133,7 +127,7 @@ export function CustomFoodForm() {
             required
             value={form.carbsG}
             onChange={(e) => update("carbsG", Number(e.target.value))}
-            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+            className={`${INPUT} py-1.5`}
           />
         </Field>
         <Field label="Fat (g)">
@@ -144,20 +138,17 @@ export function CustomFoodForm() {
             required
             value={form.fatG}
             onChange={(e) => update("fatG", Number(e.target.value))}
-            className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+            className={`${INPUT} py-1.5`}
           />
         </Field>
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 transition-colors px-3 py-1.5 text-sm font-medium"
-        >
+        <button type="submit" disabled={loading} className={BTN_PRIMARY}>
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {loading ? "Saving..." : "Save food"}
         </button>
-        <button type="button" onClick={() => setOpen(false)} className="text-sm text-neutral-600 hover:text-neutral-900">
+        <button type="button" onClick={() => setOpen(false)} className="text-sm text-neutral-500 hover:text-neutral-900">
           Cancel
         </button>
       </div>
@@ -167,7 +158,7 @@ export function CustomFoodForm() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="flex flex-col gap-1 text-xs text-neutral-600">
+    <label className="flex flex-col gap-1 text-xs font-medium text-neutral-500">
       {label}
       {children}
     </label>

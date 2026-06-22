@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
+import { Loader2 } from "lucide-react";
 import { MUSCLE_GROUP_LABELS } from "@/lib/goals";
+import { INPUT } from "@/lib/ui";
 
 type Exercise = {
   id: string;
@@ -46,7 +48,7 @@ export function ProgressExplorer({ exercises, initialExerciseId }: { exercises: 
       <select
         value={exerciseId}
         onChange={(e) => setExerciseId(e.target.value)}
-        className="rounded-md bg-white border border-neutral-300 px-3 py-2 outline-none focus:border-emerald-500 max-w-sm"
+        className={`${INPUT} max-w-sm py-2`}
       >
         {exercises.map((ex) => (
           <option key={ex.id} value={ex.id}>
@@ -56,22 +58,24 @@ export function ProgressExplorer({ exercises, initialExerciseId }: { exercises: 
       </select>
 
       {loading ? (
-        <p className="text-sm text-neutral-500">Loading...</p>
+        <p className="flex items-center gap-2 text-sm text-neutral-500">
+          <Loader2 className="h-4 w-4 animate-spin" /> Loading...
+        </p>
       ) : data.length === 0 ? (
         <p className="text-sm text-neutral-500">No sets logged for this exercise yet.</p>
       ) : (
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-            <XAxis dataKey="date" stroke="#737373" fontSize={12} />
-            <YAxis stroke="#737373" fontSize={12} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+            <XAxis dataKey="date" stroke="#a3a3a3" fontSize={12} />
+            <YAxis stroke="#a3a3a3" fontSize={12} />
             <Tooltip
-              contentStyle={{ background: "#171717", border: "1px solid #404040", borderRadius: 8 }}
-              labelStyle={{ color: "#d4d4d4" }}
+              contentStyle={{ background: "#ffffff", border: "1px solid #e5e5e5", borderRadius: 8 }}
+              labelStyle={{ color: "#404040" }}
             />
             <Legend />
-            <Line type="monotone" dataKey="maxWeight" stroke="#34d399" strokeWidth={2} dot={{ r: 3 }} name="Max Weight (kg)" />
-            <Line type="monotone" dataKey="volume" stroke="#60a5fa" strokeWidth={2} dot={{ r: 3 }} name="Volume (kg)" />
+            <Line type="monotone" dataKey="maxWeight" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} name="Max Weight (kg)" />
+            <Line type="monotone" dataKey="volume" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} name="Volume (kg)" />
           </LineChart>
         </ResponsiveContainer>
       )}

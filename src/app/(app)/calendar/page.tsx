@@ -1,10 +1,15 @@
 import Link from "next/link";
+import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Dumbbell, Scale, Utensils } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
 import { GOAL_PRESETS } from "@/lib/goals";
 import { MacroBar } from "@/components/MacroBar";
 import { CalendarDateJump } from "@/components/CalendarDateJump";
+import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ICON_BTN } from "@/lib/ui";
 
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -126,39 +131,30 @@ export default async function CalendarPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">Calendar</h1>
-          <p className="text-neutral-600 text-sm mt-1">Browse your daily activity history.</p>
-        </div>
-        <CalendarDateJump date={selectedDate} />
-      </div>
+      <PageHeader
+        icon={CalendarDays}
+        title="Calendar"
+        subtitle="Browse your daily activity history."
+        action={<CalendarDateJump date={selectedDate} />}
+      />
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
+      <Card>
         <div className="flex items-center justify-between mb-4">
-          <Link
-            href={`/calendar?month=${prevMonth}&date=${selectedDate}`}
-            className="rounded-md border border-neutral-300 px-2 py-1.5 hover:bg-neutral-100 transition-colors"
-            aria-label="Previous month"
-          >
-            ←
+          <Link href={`/calendar?month=${prevMonth}&date=${selectedDate}`} className={ICON_BTN} aria-label="Previous month">
+            <ChevronLeft className="h-4 w-4" />
           </Link>
           <div className="flex items-center gap-3">
-            <h2 className="font-semibold">{monthLabel}</h2>
+            <h2 className="font-semibold text-neutral-900">{monthLabel}</h2>
             <Link href={`/calendar?month=${today.slice(0, 7)}&date=${today}`} className="text-sm text-emerald-600 hover:underline">
               Today
             </Link>
           </div>
-          <Link
-            href={`/calendar?month=${nextMonth}&date=${selectedDate}`}
-            className="rounded-md border border-neutral-300 px-2 py-1.5 hover:bg-neutral-100 transition-colors"
-            aria-label="Next month"
-          >
-            →
+          <Link href={`/calendar?month=${nextMonth}&date=${selectedDate}`} className={ICON_BTN} aria-label="Next month">
+            <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-7 gap-1.5 text-center text-xs text-neutral-500 mb-2">
+        <div className="grid grid-cols-7 gap-1.5 text-center text-xs font-medium text-neutral-400 mb-2">
           {WEEKDAY_LABELS.map((label) => (
             <div key={label}>{label}</div>
           ))}
@@ -177,13 +173,13 @@ export default async function CalendarPage({
                 href={`/calendar?month=${month}&date=${cellDate}`}
                 className={`flex flex-col items-center gap-1 rounded-lg border px-1 py-2 text-xs transition-colors ${
                   isSelected
-                    ? "border-emerald-500 bg-emerald-600/20"
+                    ? "border-neutral-900 bg-neutral-900 text-white"
                     : isToday
-                      ? "border-neutral-400 bg-neutral-100"
-                      : "border-neutral-300 hover:bg-neutral-100"
+                      ? "border-emerald-300 bg-emerald-50"
+                      : "border-neutral-200 hover:bg-neutral-50"
                 }`}
               >
-                <span className={isToday ? "font-semibold text-emerald-600" : ""}>{dayNumber}</span>
+                <span className={isToday && !isSelected ? "font-semibold text-emerald-600" : ""}>{dayNumber}</span>
                 <span className="flex gap-0.5 h-2 items-center">
                   {entry?.workoutCount ? <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> : null}
                   {entry?.calories ? <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> : null}
@@ -194,7 +190,7 @@ export default async function CalendarPage({
           })}
         </div>
 
-        <div className="flex gap-4 mt-4 text-xs text-neutral-600">
+        <div className="flex gap-4 mt-4 text-xs text-neutral-500">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Workout
           </span>
@@ -205,19 +201,21 @@ export default async function CalendarPage({
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> Weight
           </span>
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
+      <Card>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold">{selectedLabel}</h2>
-          <Link href={`/nutrition?date=${selectedDate}`} className="text-sm text-emerald-600 hover:underline">
-            Log food →
+          <h2 className="font-semibold text-neutral-900">{selectedLabel}</h2>
+          <Link href={`/nutrition?date=${selectedDate}`} className="flex items-center gap-1 text-sm text-emerald-600 hover:underline">
+            Log food <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
-            <h3 className="text-sm font-medium text-neutral-600 mb-3">Nutrition</h3>
+            <h3 className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 mb-3">
+              <Utensils className="h-3.5 w-3.5" /> Nutrition
+            </h3>
             {dayFoodLogs.length === 0 ? (
               <p className="text-sm text-neutral-500">Nothing logged this day.</p>
             ) : (
@@ -231,9 +229,11 @@ export default async function CalendarPage({
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-neutral-600 mb-3">Workouts</h3>
+            <h3 className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 mb-3">
+              <Dumbbell className="h-3.5 w-3.5" /> Workouts
+            </h3>
             {daySessions.length === 0 ? (
-              <p className="text-sm text-neutral-500">No workouts logged this day.</p>
+              <EmptyState icon={Dumbbell} message="No workouts logged this day." />
             ) : (
               <ul className="flex flex-col gap-2">
                 {daySessions.map((session) => {
@@ -242,10 +242,10 @@ export default async function CalendarPage({
                     <li key={session.id}>
                       <Link
                         href={`/workouts/${session.id}`}
-                        className="flex items-center justify-between rounded-lg border border-neutral-300 px-3 py-2 hover:border-emerald-600/50 transition-colors"
+                        className="flex items-center justify-between rounded-lg border border-neutral-200 px-3 py-2 hover:border-neutral-300 hover:bg-neutral-50 transition-colors"
                       >
-                        <span>{session.title}</span>
-                        <span className="text-sm text-neutral-600">
+                        <span className="font-medium text-neutral-900">{session.title}</span>
+                        <span className="text-sm text-neutral-500">
                           {session.sets.length} sets · {Math.round(totalVolume)} kg
                         </span>
                       </Link>
@@ -255,18 +255,20 @@ export default async function CalendarPage({
               </ul>
             )}
 
-            <h3 className="text-sm font-medium text-neutral-600 mt-5 mb-2">Body Weight</h3>
+            <h3 className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 mt-5 mb-2">
+              <Scale className="h-3.5 w-3.5" /> Body Weight
+            </h3>
             {dayWeightLog ? (
               <p className="text-sm">
-                <span className="text-2xl font-bold">{round(dayWeightLog.weightKg, 1)}</span>{" "}
-                <span className="text-neutral-600">kg</span>
+                <span className="text-2xl font-semibold tracking-tight">{round(dayWeightLog.weightKg, 1)}</span>{" "}
+                <span className="text-neutral-500">kg</span>
               </p>
             ) : (
               <p className="text-sm text-neutral-500">No weight logged this day.</p>
             )}
           </div>
         </div>
-      </section>
+      </Card>
     </div>
   );
 }

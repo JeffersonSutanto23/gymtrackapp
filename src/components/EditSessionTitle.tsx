@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Check, Loader2, Pencil, X } from "lucide-react";
+import { INPUT } from "@/lib/ui";
 
 export function EditSessionTitle({ sessionId, title }: { sessionId: string; title: string }) {
   const router = useRouter();
@@ -27,9 +29,13 @@ export function EditSessionTitle({ sessionId, title }: { sessionId: string; titl
   if (!editing) {
     return (
       <div className="flex items-center gap-2 mt-1">
-        <h1 className="text-2xl font-bold">{title}</h1>
-        <button onClick={() => setEditing(true)} className="text-xs text-neutral-500 hover:text-neutral-700">
-          Edit
+        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">{title}</h1>
+        <button
+          onClick={() => setEditing(true)}
+          aria-label="Edit title"
+          className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+        >
+          <Pencil className="h-3.5 w-3.5" />
         </button>
       </div>
     );
@@ -41,19 +47,25 @@ export function EditSessionTitle({ sessionId, title }: { sessionId: string; titl
         autoFocus
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="text-2xl font-bold rounded-md bg-white border border-neutral-300 px-2 py-1 outline-none focus:border-emerald-500"
+        className={`text-xl font-semibold ${INPUT} py-1`}
       />
-      <button onClick={handleSave} disabled={loading} className="text-sm text-emerald-600 hover:underline disabled:opacity-50">
-        {loading ? "Saving..." : "Save"}
+      <button
+        onClick={handleSave}
+        disabled={loading}
+        aria-label="Save"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-emerald-600 transition-colors hover:bg-emerald-50 disabled:opacity-50"
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
       </button>
       <button
         onClick={() => {
           setEditing(false);
           setValue(title);
         }}
-        className="text-sm text-neutral-500 hover:underline"
+        aria-label="Cancel"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
       >
-        Cancel
+        <X className="h-4 w-4" />
       </button>
     </div>
   );

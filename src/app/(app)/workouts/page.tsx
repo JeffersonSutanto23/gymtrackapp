@@ -1,8 +1,13 @@
 import Link from "next/link";
+import { Dumbbell, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { NewWorkoutForm } from "@/components/NewWorkoutForm";
 import { DeleteButton } from "@/components/DeleteButton";
+import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 export default async function WorkoutsPage() {
   const user = await getCurrentUser();
@@ -15,45 +20,39 @@ export default async function WorkoutsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold">Workouts</h1>
-        <p className="text-neutral-600 text-sm mt-1">Log a new session or review past ones.</p>
-      </div>
+      <PageHeader icon={Dumbbell} title="Workouts" subtitle="Log a new session or review past ones." />
 
-      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
-        <h2 className="font-semibold mb-3">New Session</h2>
+      <Card>
+        <SectionHeader icon={Plus} title="New Session" />
         <NewWorkoutForm />
-      </section>
+      </Card>
 
-      <section className="flex flex-col gap-2">
+      <Card>
         {sessions.length === 0 ? (
-          <p className="text-sm text-neutral-500">No workouts yet. Start your first session above.</p>
+          <EmptyState icon={Dumbbell} message="No workouts yet. Start your first session above." />
         ) : (
-          sessions.map((session) => {
-            const totalVolume = session.sets.reduce((sum, s) => sum + s.reps * s.weightKg, 0);
-            return (
-              <div
-                key={session.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-neutral-300 bg-neutral-50 px-4 py-3 hover:border-emerald-600/50 transition-colors"
-              >
-                <Link href={`/workouts/${session.id}`} className="flex flex-1 items-center justify-between gap-3">
-                  <div>
-                    <p className="font-medium">{session.title}</p>
-                    <p className="text-sm text-neutral-600">
-                      {new Date(session.startedAt).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="text-right text-sm text-neutral-600">
-                    <p>{session.sets.length} sets</p>
-                    <p>{Math.round(totalVolume)} kg volume</p>
-                  </div>
-                </Link>
-                <DeleteButton endpoint={`/api/workouts/${session.id}`} />
-              </div>
-            );
-          })
+          <ul className="flex flex-col gap-1">
+            {sessions.map((session) => {
+              const totalVolume = session.sets.reduce((sum, s) => sum + s.reps * s.weightKg, 0);
+              return (
+                <li key={session.id} className="flex items-center gap-2 rounded-lg transition-colors hover:bg-neutral-50">
+                  <Link href={`/workouts/${session.id}`} className="flex flex-1 items-center justify-between gap-3 px-2 py-2.5">
+                    <div>
+                      <p className="font-medium text-neutral-900">{session.title}</p>
+                      <p className="text-sm text-neutral-500">{new Date(session.startedAt).toLocaleString()}</p>
+                    </div>
+                    <div className="text-right text-sm text-neutral-500">
+                      <p>{session.sets.length} sets</p>
+                      <p>{Math.round(totalVolume)} kg volume</p>
+                    </div>
+                  </Link>
+                  <DeleteButton endpoint={`/api/workouts/${session.id}`} />
+                </li>
+              );
+            })}
+          </ul>
         )}
-      </section>
+      </Card>
     </div>
   );
 }

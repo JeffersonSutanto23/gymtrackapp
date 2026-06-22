@@ -2,15 +2,26 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  Flame,
+  LayoutDashboard,
+  CalendarDays,
+  Dumbbell,
+  TrendingUp,
+  Utensils,
+  Apple,
+  User,
+  LogOut,
+} from "lucide-react";
 
 const LINKS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/calendar", label: "Calendar" },
-  { href: "/workouts", label: "Workouts" },
-  { href: "/progress", label: "Progress" },
-  { href: "/nutrition", label: "Nutrition" },
-  { href: "/foods", label: "Foods" },
-  { href: "/profile", label: "Profile" },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/calendar", label: "Calendar", icon: CalendarDays },
+  { href: "/workouts", label: "Workouts", icon: Dumbbell },
+  { href: "/progress", label: "Progress", icon: TrendingUp },
+  { href: "/nutrition", label: "Nutrition", icon: Utensils },
+  { href: "/foods", label: "Foods", icon: Apple },
+  { href: "/profile", label: "Profile", icon: User },
 ];
 
 export function NavBar({ userName }: { userName: string }) {
@@ -24,21 +35,28 @@ export function NavBar({ userName }: { userName: string }) {
   }
 
   return (
-    <header className="border-b border-neutral-300 bg-white/95 sticky top-0 z-10">
-      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
         <div className="flex items-center gap-6">
-          <span className="font-bold text-emerald-600">Macrofit</span>
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-white">
+              <Flame className="h-4 w-4" />
+            </span>
+            <span className="font-semibold tracking-tight text-neutral-900">Macrofit</span>
+          </Link>
           <nav className="hidden sm:flex gap-1">
             {LINKS.map((link) => {
               const active = pathname === link.href || pathname?.startsWith(link.href + "/");
+              const Icon = link.icon;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
-                    active ? "bg-emerald-600 text-white" : "text-neutral-600 hover:bg-neutral-100"
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                    active ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-neutral-100"
                   }`}
                 >
+                  <Icon className="h-4 w-4" />
                   {link.label}
                 </Link>
               );
@@ -46,26 +64,29 @@ export function NavBar({ userName }: { userName: string }) {
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-neutral-600 hidden sm:inline">{userName}</span>
+          <span className="hidden text-sm text-neutral-500 sm:inline">{userName}</span>
           <button
             onClick={handleLogout}
-            className="text-sm rounded-md px-3 py-1.5 border border-neutral-300 hover:bg-neutral-100 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 px-3 py-1.5 text-sm text-neutral-600 transition-colors hover:bg-neutral-50"
           >
-            Log out
+            <LogOut className="h-4 w-4" />
+            <span className="hidden sm:inline">Log out</span>
           </button>
         </div>
       </div>
-      <nav className="sm:hidden flex gap-1 overflow-x-auto px-4 pb-2">
+      <nav className="flex gap-1 overflow-x-auto px-4 pb-2 sm:hidden">
         {LINKS.map((link) => {
           const active = pathname === link.href || pathname?.startsWith(link.href + "/");
+          const Icon = link.icon;
           return (
             <Link
               key={link.href}
               href={link.href}
-              className={`px-3 py-1.5 rounded-md text-sm whitespace-nowrap transition-colors ${
-                active ? "bg-emerald-600 text-white" : "text-neutral-600 hover:bg-neutral-100"
+              className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                active ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-neutral-100"
               }`}
             >
+              <Icon className="h-4 w-4" />
               {link.label}
             </Link>
           );

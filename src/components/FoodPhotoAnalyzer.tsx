@@ -2,8 +2,10 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Camera, Loader2, Sparkles, Utensils } from "lucide-react";
 import { FOOD_CATEGORIES } from "@/lib/categories";
 import { MEAL_TYPE_LABELS } from "@/lib/goals";
+import { BTN_PRIMARY, INPUT } from "@/lib/ui";
 
 type Estimate = {
   name: string;
@@ -156,35 +158,42 @@ export function FoodPhotoAnalyzer({ date }: { date: string }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-3">
-        <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} className="text-sm" />
-        {analyzing && <span className="text-sm text-neutral-600">Analyzing photo...</span>}
-      </div>
+      <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 text-sm text-neutral-600 transition-colors hover:border-emerald-400 hover:bg-emerald-50/30">
+        <Camera className="h-4 w-4 text-neutral-400" />
+        <span>Take or upload a photo</span>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handleFile}
+          className="hidden"
+        />
+      </label>
+      {analyzing && (
+        <span className="flex items-center gap-2 text-sm text-neutral-500">
+          <Loader2 className="h-4 w-4 animate-spin" /> Analyzing photo...
+        </span>
+      )}
 
       {previewUrl && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={previewUrl} alt="Selected food" className="max-h-48 rounded-md border border-neutral-300 object-cover" />
+        <img src={previewUrl} alt="Selected food" className="max-h-48 rounded-lg border border-neutral-200 object-cover" />
       )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {estimate && (
-        <div className="flex flex-col gap-3 rounded-md border border-neutral-300 p-4">
-          <p className="text-xs text-neutral-500">{estimate.notes}</p>
+        <div className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-4">
+          <p className="flex items-start gap-1.5 text-xs text-neutral-500">
+            <Sparkles className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> {estimate.notes}
+          </p>
           <div className="grid sm:grid-cols-2 gap-3">
             <Field label="Name">
-              <input
-                value={estimate.name}
-                onChange={(e) => update("name", e.target.value)}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
-              />
+              <input value={estimate.name} onChange={(e) => update("name", e.target.value)} className={`${INPUT} py-1.5`} />
             </Field>
             <Field label="Category">
-              <select
-                value={estimate.category}
-                onChange={(e) => update("category", e.target.value)}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
-              >
+              <select value={estimate.category} onChange={(e) => update("category", e.target.value)} className={`${INPUT} py-1.5`}>
                 {FOOD_CATEGORIES.map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -199,15 +208,11 @@ export function FoodPhotoAnalyzer({ date }: { date: string }) {
                 step={0.1}
                 value={estimate.servingSize}
                 onChange={(e) => update("servingSize", Number(e.target.value))}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+                className={`${INPUT} py-1.5`}
               />
             </Field>
             <Field label="Serving unit">
-              <input
-                value={estimate.servingUnit}
-                onChange={(e) => update("servingUnit", e.target.value)}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
-              />
+              <input value={estimate.servingUnit} onChange={(e) => update("servingUnit", e.target.value)} className={`${INPUT} py-1.5`} />
             </Field>
             <Field label="Calories">
               <input
@@ -215,7 +220,7 @@ export function FoodPhotoAnalyzer({ date }: { date: string }) {
                 min={0}
                 value={estimate.calories}
                 onChange={(e) => update("calories", Number(e.target.value))}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+                className={`${INPUT} py-1.5`}
               />
             </Field>
             <Field label="Protein (g)">
@@ -225,7 +230,7 @@ export function FoodPhotoAnalyzer({ date }: { date: string }) {
                 step={0.1}
                 value={estimate.proteinG}
                 onChange={(e) => update("proteinG", Number(e.target.value))}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+                className={`${INPUT} py-1.5`}
               />
             </Field>
             <Field label="Carbs (g)">
@@ -235,7 +240,7 @@ export function FoodPhotoAnalyzer({ date }: { date: string }) {
                 step={0.1}
                 value={estimate.carbsG}
                 onChange={(e) => update("carbsG", Number(e.target.value))}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+                className={`${INPUT} py-1.5`}
               />
             </Field>
             <Field label="Fat (g)">
@@ -245,29 +250,29 @@ export function FoodPhotoAnalyzer({ date }: { date: string }) {
                 step={0.1}
                 value={estimate.fatG}
                 onChange={(e) => update("fatG", Number(e.target.value))}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+                className={`${INPUT} py-1.5`}
               />
             </Field>
           </div>
 
           <div className="flex flex-wrap items-end gap-2">
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-neutral-600">Servings</label>
+              <label className="text-xs font-medium text-neutral-500">Servings</label>
               <input
                 type="number"
                 min={0.25}
                 step={0.25}
                 value={servings}
                 onChange={(e) => setServings(Number(e.target.value))}
-                className="w-24 rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+                className={`w-24 ${INPUT} py-1.5`}
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-neutral-600">Meal</label>
+              <label className="text-xs font-medium text-neutral-500">Meal</label>
               <select
                 value={mealType}
                 onChange={(e) => setMealType(e.target.value as keyof typeof MEAL_TYPE_LABELS)}
-                className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+                className={`${INPUT} py-1.5`}
               >
                 {Object.entries(MEAL_TYPE_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>
@@ -276,15 +281,11 @@ export function FoodPhotoAnalyzer({ date }: { date: string }) {
                 ))}
               </select>
             </div>
-            <button
-              type="button"
-              onClick={handleLog}
-              disabled={saving}
-              className="rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 transition-colors px-3 py-1.5 text-sm font-medium"
-            >
+            <button type="button" onClick={handleLog} disabled={saving} className={BTN_PRIMARY}>
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Utensils className="h-4 w-4" />}
               {saving ? "Logging..." : "Log this meal"}
             </button>
-            <button type="button" onClick={reset} className="text-sm text-neutral-600 hover:text-neutral-900">
+            <button type="button" onClick={reset} className="text-sm text-neutral-500 hover:text-neutral-900">
               Cancel
             </button>
           </div>
@@ -296,7 +297,7 @@ export function FoodPhotoAnalyzer({ date }: { date: string }) {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="flex flex-col gap-1 text-xs text-neutral-600">
+    <label className="flex flex-col gap-1 text-xs font-medium text-neutral-500">
       {label}
       {children}
     </label>
