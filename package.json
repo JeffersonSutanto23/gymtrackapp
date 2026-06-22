@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:setup": "tsx scripts/apply-remote-migration.ts && tsx prisma/seed.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
