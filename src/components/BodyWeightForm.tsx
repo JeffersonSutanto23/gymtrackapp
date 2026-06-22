@@ -24,7 +24,7 @@ export function BodyWeightForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex items-end gap-2">
-      <label className="flex flex-col gap-1 text-sm text-neutral-400">
+      <label className="flex flex-col gap-1 text-sm text-neutral-600">
         Weight (kg)
         <input
           type="number"
@@ -32,7 +32,7 @@ export function BodyWeightForm() {
           step={0.1}
           value={weightKg}
           onChange={(e) => setWeightKg(Number(e.target.value))}
-          className="rounded-md bg-neutral-900 border border-neutral-800 px-3 py-2 text-neutral-100 outline-none focus:border-emerald-500 w-32"
+          className="rounded-md bg-white border border-neutral-300 px-3 py-2 text-neutral-900 outline-none focus:border-emerald-500 w-32"
         />
       </label>
       <button

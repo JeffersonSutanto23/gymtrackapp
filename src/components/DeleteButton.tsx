@@ -30,7 +30,7 @@ export function DeleteButton({
     <button
       onClick={handleClick}
       disabled={loading}
-      className="text-xs text-red-400 hover:text-red-300 disabled:opacity-50"
+      className="text-xs text-red-600 hover:text-red-700 disabled:opacity-50"
     >
       {loading ? "..." : label}
     </button>

@@ -24,10 +24,10 @@ export function NavBar({ userName }: { userName: string }) {
   }
 
   return (
-    <header className="border-b border-neutral-800 bg-neutral-950/95 sticky top-0 z-10">
+    <header className="border-b border-neutral-300 bg-white/95 sticky top-0 z-10">
       <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-6">
-          <span className="font-bold text-emerald-400">JeffersonTrader</span>
+          <span className="font-bold text-emerald-600">JeffersonTrader</span>
           <nav className="hidden sm:flex gap-1">
             {LINKS.map((link) => {
               const active = pathname === link.href || pathname?.startsWith(link.href + "/");
@@ -36,7 +36,7 @@ export function NavBar({ userName }: { userName: string }) {
                   key={link.href}
                   href={link.href}
                   className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
-                    active ? "bg-emerald-600 text-white" : "text-neutral-300 hover:bg-neutral-800"
+                    active ? "bg-emerald-600 text-white" : "text-neutral-600 hover:bg-neutral-100"
                   }`}
                 >
                   {link.label}
@@ -46,10 +46,10 @@ export function NavBar({ userName }: { userName: string }) {
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-neutral-400 hidden sm:inline">{userName}</span>
+          <span className="text-sm text-neutral-600 hidden sm:inline">{userName}</span>
           <button
             onClick={handleLogout}
-            className="text-sm rounded-md px-3 py-1.5 border border-neutral-700 hover:bg-neutral-800 transition-colors"
+            className="text-sm rounded-md px-3 py-1.5 border border-neutral-300 hover:bg-neutral-100 transition-colors"
           >
             Log out
           </button>
@@ -63,7 +63,7 @@ export function NavBar({ userName }: { userName: string }) {
               key={link.href}
               href={link.href}
               className={`px-3 py-1.5 rounded-md text-sm whitespace-nowrap transition-colors ${
-                active ? "bg-emerald-600 text-white" : "text-neutral-300 hover:bg-neutral-800"
+                active ? "bg-emerald-600 text-white" : "text-neutral-600 hover:bg-neutral-100"
               }`}
             >
               {link.label}

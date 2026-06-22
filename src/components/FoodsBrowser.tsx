@@ -44,14 +44,14 @@ export function FoodsBrowser() {
         placeholder="Search the food database..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="rounded-md bg-neutral-900 border border-neutral-800 px-3 py-2 outline-none focus:border-emerald-500"
+        className="rounded-md bg-white border border-neutral-300 px-3 py-2 outline-none focus:border-emerald-500"
       />
 
       <div className="flex flex-wrap gap-1.5">
         <button
           onClick={() => setCategory(null)}
           className={`px-3 py-1 rounded-full text-xs transition-colors ${
-            category === null ? "bg-emerald-600 text-white" : "bg-neutral-900 border border-neutral-800 text-neutral-300"
+            category === null ? "bg-emerald-600 text-white" : "bg-white border border-neutral-300 text-neutral-600"
           }`}
         >
           All
@@ -61,7 +61,7 @@ export function FoodsBrowser() {
             key={cat}
             onClick={() => setCategory(cat)}
             className={`px-3 py-1 rounded-full text-xs transition-colors ${
-              category === cat ? "bg-emerald-600 text-white" : "bg-neutral-900 border border-neutral-800 text-neutral-300"
+              category === cat ? "bg-emerald-600 text-white" : "bg-white border border-neutral-300 text-neutral-600"
             }`}
           >
             {cat}
@@ -74,10 +74,10 @@ export function FoodsBrowser() {
       ) : foods.length === 0 ? (
         <p className="text-sm text-neutral-500">No foods found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-md border border-neutral-800">
+        <div className="overflow-x-auto rounded-md border border-neutral-300">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-neutral-400 bg-neutral-900/80">
+              <tr className="text-left text-neutral-600 bg-neutral-50">
                 <th className="py-2 px-3">Name</th>
                 <th className="py-2 px-3">Serving</th>
                 <th className="py-2 px-3">Cal</th>
@@ -88,12 +88,12 @@ export function FoodsBrowser() {
             </thead>
             <tbody>
               {foods.map((food) => (
-                <tr key={food.id} className="border-t border-neutral-900">
+                <tr key={food.id} className="border-t border-neutral-100">
                   <td className="py-2 px-3">
                     {food.name}
-                    {food.isCustom && <span className="ml-2 text-xs text-emerald-400">custom</span>}
+                    {food.isCustom && <span className="ml-2 text-xs text-emerald-600">custom</span>}
                   </td>
-                  <td className="py-2 px-3 text-neutral-400">
+                  <td className="py-2 px-3 text-neutral-600">
                     {food.servingSize}{food.servingUnit === "g" ? "g" : ` ${food.servingUnit}`}
                   </td>
                   <td className="py-2 px-3">{Math.round(food.calories)}</td>

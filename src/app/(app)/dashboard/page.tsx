@@ -46,16 +46,16 @@ export default async function DashboardPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-neutral-400 text-sm mt-1">
-          Goal: <span className="text-emerald-400">{GOAL_LABELS[targets.goal]}</span>
+        <p className="text-neutral-600 text-sm mt-1">
+          Goal: <span className="text-emerald-600">{GOAL_LABELS[targets.goal]}</span>
         </p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
-        <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+        <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Today&apos;s Nutrition</h2>
-            <Link href="/nutrition" className="text-sm text-emerald-400 hover:underline">
+            <Link href="/nutrition" className="text-sm text-emerald-600 hover:underline">
               Log food →
             </Link>
           </div>
@@ -67,19 +67,19 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+        <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold">Body Weight</h2>
-            <Link href="/profile" className="text-sm text-emerald-400 hover:underline">
+            <Link href="/profile" className="text-sm text-emerald-600 hover:underline">
               Log weight →
             </Link>
           </div>
           {latestWeight ? (
             <div className="flex items-baseline gap-2 mb-2">
               <span className="text-3xl font-bold">{round(latestWeight.weightKg, 1)}</span>
-              <span className="text-neutral-400">kg</span>
+              <span className="text-neutral-600">kg</span>
               {weightDelta !== null && (
-                <span className={`text-sm ${weightDelta >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                <span className={`text-sm ${weightDelta >= 0 ? "text-emerald-600" : "text-red-600"}`}>
                   {weightDelta >= 0 ? "+" : ""}
                   {round(weightDelta, 1)} kg
                 </span>
@@ -92,10 +92,10 @@ export default async function DashboardPage() {
         </section>
       </div>
 
-      <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold">Recent Workouts</h2>
-          <Link href="/workouts" className="text-sm text-emerald-400 hover:underline">
+          <Link href="/workouts" className="text-sm text-emerald-600 hover:underline">
             View all →
           </Link>
         </div>
@@ -107,10 +107,10 @@ export default async function DashboardPage() {
               <li key={session.id}>
                 <Link
                   href={`/workouts/${session.id}`}
-                  className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-neutral-800 transition-colors"
+                  className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-neutral-100 transition-colors"
                 >
                   <span>{session.title}</span>
-                  <span className="text-sm text-neutral-400">
+                  <span className="text-sm text-neutral-600">
                     {new Date(session.startedAt).toLocaleDateString()} · {session.sets.length} sets
                   </span>
                 </Link>

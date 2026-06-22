@@ -76,23 +76,23 @@ export function FoodSearchPicker({ date }: { date: string }) {
           setQuery(e.target.value);
           setSelected(null);
         }}
-        className="rounded-md bg-neutral-900 border border-neutral-800 px-3 py-2 outline-none focus:border-emerald-500"
+        className="rounded-md bg-white border border-neutral-300 px-3 py-2 outline-none focus:border-emerald-500"
       />
 
       {!selected && results.length > 0 && (
-        <ul className="flex flex-col gap-1 max-h-64 overflow-y-auto rounded-md border border-neutral-800">
+        <ul className="flex flex-col gap-1 max-h-64 overflow-y-auto rounded-md border border-neutral-300">
           {results.map((food) => (
             <li key={food.id}>
               <button
                 type="button"
                 onClick={() => setSelected(food)}
-                className="w-full text-left px-3 py-2 hover:bg-neutral-800 transition-colors flex justify-between items-center"
+                className="w-full text-left px-3 py-2 hover:bg-neutral-100 transition-colors flex justify-between items-center"
               >
                 <span>
                   {food.name}
                   {food.brand && <span className="text-neutral-500"> · {food.brand}</span>}
                 </span>
-                <span className="text-xs text-neutral-400 whitespace-nowrap ml-2">
+                <span className="text-xs text-neutral-600 whitespace-nowrap ml-2">
                   {Math.round(food.calories)} kcal / {food.servingSize}{food.servingUnit === "g" ? "g" : ` ${food.servingUnit}`}
                 </span>
               </button>
@@ -102,28 +102,28 @@ export function FoodSearchPicker({ date }: { date: string }) {
       )}
 
       {selected && (
-        <form onSubmit={handleAdd} className="flex flex-wrap items-end gap-2 rounded-md border border-neutral-800 p-3">
+        <form onSubmit={handleAdd} className="flex flex-wrap items-end gap-2 rounded-md border border-neutral-300 p-3">
           <div className="flex flex-col gap-1">
-            <span className="text-xs text-neutral-400">Food</span>
+            <span className="text-xs text-neutral-600">Food</span>
             <span className="text-sm">{selected.name}</span>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-neutral-400">Servings</label>
+            <label className="text-xs text-neutral-600">Servings</label>
             <input
               type="number"
               min={0.25}
               step={0.25}
               value={servings}
               onChange={(e) => setServings(Number(e.target.value))}
-              className="w-24 rounded-md bg-neutral-900 border border-neutral-800 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+              className="w-24 rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs text-neutral-400">Meal</label>
+            <label className="text-xs text-neutral-600">Meal</label>
             <select
               value={mealType}
               onChange={(e) => setMealType(e.target.value as keyof typeof MEAL_TYPE_LABELS)}
-              className="rounded-md bg-neutral-900 border border-neutral-800 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
+              className="rounded-md bg-white border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-emerald-500"
             >
               {Object.entries(MEAL_TYPE_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>
@@ -142,7 +142,7 @@ export function FoodSearchPicker({ date }: { date: string }) {
           <button
             type="button"
             onClick={() => setSelected(null)}
-            className="text-sm text-neutral-400 hover:text-neutral-200"
+            className="text-sm text-neutral-600 hover:text-neutral-900"
           >
             Cancel
           </button>

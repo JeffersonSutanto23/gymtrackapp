@@ -15,12 +15,12 @@ export function MacroBar({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between text-sm">
-        <span className="text-neutral-300">{label}</span>
-        <span className="text-neutral-400">
+        <span className="text-neutral-600">{label}</span>
+        <span className="text-neutral-600">
           {Math.round(current)} / {Math.round(target)} {unit}
         </span>
       </div>
-      <div className="h-2 rounded-full bg-neutral-800 overflow-hidden">
+      <div className="h-2 rounded-full bg-neutral-200 overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
       </div>
     </div>

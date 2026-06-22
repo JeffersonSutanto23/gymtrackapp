@@ -11,12 +11,12 @@ export default async function LoginPage() {
     <div className="flex flex-1 flex-col items-center justify-center gap-6 px-4">
       <div className="text-center">
         <h1 className="text-2xl font-bold">Welcome back</h1>
-        <p className="text-neutral-400 text-sm mt-1">Log in to track your gym and nutrition progress.</p>
+        <p className="text-neutral-600 text-sm mt-1">Log in to track your gym and nutrition progress.</p>
       </div>
       <AuthForm mode="login" />
-      <p className="text-sm text-neutral-400">
+      <p className="text-sm text-neutral-600">
         No account yet?{" "}
-        <Link href="/register" className="text-emerald-400 hover:underline">
+        <Link href="/register" className="text-emerald-600 hover:underline">
           Register
         </Link>
       </p>

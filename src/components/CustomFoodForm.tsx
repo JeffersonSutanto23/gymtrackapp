@@ -54,7 +54,7 @@ export function CustomFoodForm() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="text-sm rounded-md border border-neutral-800 px-3 py-1.5 hover:bg-neutral-800 transition-colors"
+        className="text-sm rounded-md border border-neutral-300 px-3 py-1.5 hover:bg-neutral-100 transition-colors"
       >
         + Add custom food
       </button>
@@ -62,7 +62,7 @@ export function CustomFoodForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-md border border-neutral-800 p-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-md border border-neutral-300 p-4">
       <div className="grid sm:grid-cols-2 gap-3">
         <Field label="Name">
           <input
@@ -148,7 +148,7 @@ export function CustomFoodForm() {
           />
         </Field>
       </div>
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex gap-2">
         <button
           type="submit"
@@ -157,7 +157,7 @@ export function CustomFoodForm() {
         >
           {loading ? "Saving..." : "Save food"}
         </button>
-        <button type="button" onClick={() => setOpen(false)} className="text-sm text-neutral-400 hover:text-neutral-200">
+        <button type="button" onClick={() => setOpen(false)} className="text-sm text-neutral-600 hover:text-neutral-900">
           Cancel
         </button>
       </div>
@@ -180,7 +180,7 @@ export function CustomFoodForm() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="flex flex-col gap-1 text-xs text-neutral-400">
+    <label className="flex flex-col gap-1 text-xs text-neutral-600">
       {label}
       {children}
     </label>

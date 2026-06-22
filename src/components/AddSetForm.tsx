@@ -58,11 +58,11 @@ export function AddSetForm({
   return (
     <form onSubmit={handleSubmit} className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-end">
       <div className="flex flex-col gap-1 col-span-2 sm:col-span-2">
-        <label className="text-xs text-neutral-400">Exercise</label>
+        <label className="text-xs text-neutral-600">Exercise</label>
         <select
           value={exerciseId}
           onChange={(e) => setExerciseId(e.target.value)}
-          className="rounded-md bg-neutral-900 border border-neutral-800 px-2 py-2 text-sm outline-none focus:border-emerald-500"
+          className="rounded-md bg-white border border-neutral-300 px-2 py-2 text-sm outline-none focus:border-emerald-500"
         >
           {exercises.map((ex) => (
             <option key={ex.id} value={ex.id}>
@@ -72,18 +72,18 @@ export function AddSetForm({
         </select>
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-400">Reps</label>
+        <label className="text-xs text-neutral-600">Reps</label>
         <input
           type="number"
           min={1}
           required
           value={reps}
           onChange={(e) => setReps(Number(e.target.value))}
-          className="rounded-md bg-neutral-900 border border-neutral-800 px-2 py-2 text-sm outline-none focus:border-emerald-500"
+          className="rounded-md bg-white border border-neutral-300 px-2 py-2 text-sm outline-none focus:border-emerald-500"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-400">Weight (kg)</label>
+        <label className="text-xs text-neutral-600">Weight (kg)</label>
         <input
           type="number"
           min={0}
@@ -91,11 +91,11 @@ export function AddSetForm({
           required
           value={weightKg}
           onChange={(e) => setWeightKg(Number(e.target.value))}
-          className="rounded-md bg-neutral-900 border border-neutral-800 px-2 py-2 text-sm outline-none focus:border-emerald-500"
+          className="rounded-md bg-white border border-neutral-300 px-2 py-2 text-sm outline-none focus:border-emerald-500"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-400">RPE</label>
+        <label className="text-xs text-neutral-600">RPE</label>
         <input
           type="number"
           min={1}
@@ -104,7 +104,7 @@ export function AddSetForm({
           value={rpe}
           onChange={(e) => setRpe(e.target.value)}
           placeholder="optional"
-          className="rounded-md bg-neutral-900 border border-neutral-800 px-2 py-2 text-sm outline-none focus:border-emerald-500"
+          className="rounded-md bg-white border border-neutral-300 px-2 py-2 text-sm outline-none focus:border-emerald-500"
         />
       </div>
       <button
@@ -114,7 +114,7 @@ export function AddSetForm({
       >
         {loading ? "Adding..." : `Add Set #${nextSetNumber}`}
       </button>
-      {error && <p className="text-sm text-red-400 col-span-full">{error}</p>}
+      {error && <p className="text-sm text-red-600 col-span-full">{error}</p>}
     </form>
   );
 }

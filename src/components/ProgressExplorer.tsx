@@ -46,7 +46,7 @@ export function ProgressExplorer({ exercises, initialExerciseId }: { exercises: 
       <select
         value={exerciseId}
         onChange={(e) => setExerciseId(e.target.value)}
-        className="rounded-md bg-neutral-900 border border-neutral-800 px-3 py-2 outline-none focus:border-emerald-500 max-w-sm"
+        className="rounded-md bg-white border border-neutral-300 px-3 py-2 outline-none focus:border-emerald-500 max-w-sm"
       >
         {exercises.map((ex) => (
           <option key={ex.id} value={ex.id}>

@@ -56,7 +56,7 @@ export function ProfileForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-neutral-400">Goal</label>
+        <label className="text-sm text-neutral-600">Goal</label>
         <div className="flex flex-wrap gap-2">
           {Object.entries(GOAL_LABELS).map(([value, label]) => (
             <button
@@ -64,7 +64,7 @@ export function ProfileForm({
               type="button"
               onClick={() => applyPreset(value as Goal)}
               className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
-                goal === value ? "bg-emerald-600 text-white" : "bg-neutral-900 border border-neutral-800 text-neutral-300"
+                goal === value ? "bg-emerald-600 text-white" : "bg-white border border-neutral-300 text-neutral-600"
               }`}
             >
               {label}
@@ -90,7 +90,7 @@ export function ProfileForm({
         >
           {loading ? "Saving..." : "Save profile"}
         </button>
-        {saved && <span className="text-sm text-emerald-400">Saved!</span>}
+        {saved && <span className="text-sm text-emerald-600">Saved!</span>}
       </div>
     </form>
   );
@@ -106,14 +106,14 @@ function NumberField({
   onChange: (v: number) => void;
 }) {
   return (
-    <label className="flex flex-col gap-1 text-sm text-neutral-400">
+    <label className="flex flex-col gap-1 text-sm text-neutral-600">
       {label}
       <input
         type="number"
         min={0}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="rounded-md bg-neutral-900 border border-neutral-800 px-3 py-2 text-neutral-100 outline-none focus:border-emerald-500"
+        className="rounded-md bg-white border border-neutral-300 px-3 py-2 text-neutral-900 outline-none focus:border-emerald-500"
       />
     </label>
   );

@@ -129,29 +129,29 @@ export default async function CalendarPage({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Calendar</h1>
-          <p className="text-neutral-400 text-sm mt-1">Browse your daily activity history.</p>
+          <p className="text-neutral-600 text-sm mt-1">Browse your daily activity history.</p>
         </div>
         <CalendarDateJump date={selectedDate} />
       </div>
 
-      <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <div className="flex items-center justify-between mb-4">
           <Link
             href={`/calendar?month=${prevMonth}&date=${selectedDate}`}
-            className="rounded-md border border-neutral-800 px-2 py-1.5 hover:bg-neutral-800 transition-colors"
+            className="rounded-md border border-neutral-300 px-2 py-1.5 hover:bg-neutral-100 transition-colors"
             aria-label="Previous month"
           >
             ←
           </Link>
           <div className="flex items-center gap-3">
             <h2 className="font-semibold">{monthLabel}</h2>
-            <Link href={`/calendar?month=${today.slice(0, 7)}&date=${today}`} className="text-sm text-emerald-400 hover:underline">
+            <Link href={`/calendar?month=${today.slice(0, 7)}&date=${today}`} className="text-sm text-emerald-600 hover:underline">
               Today
             </Link>
           </div>
           <Link
             href={`/calendar?month=${nextMonth}&date=${selectedDate}`}
-            className="rounded-md border border-neutral-800 px-2 py-1.5 hover:bg-neutral-800 transition-colors"
+            className="rounded-md border border-neutral-300 px-2 py-1.5 hover:bg-neutral-100 transition-colors"
             aria-label="Next month"
           >
             →
@@ -179,11 +179,11 @@ export default async function CalendarPage({
                   isSelected
                     ? "border-emerald-500 bg-emerald-600/20"
                     : isToday
-                      ? "border-neutral-600 bg-neutral-800/50"
-                      : "border-neutral-800 hover:bg-neutral-800/50"
+                      ? "border-neutral-400 bg-neutral-100"
+                      : "border-neutral-300 hover:bg-neutral-100"
                 }`}
               >
-                <span className={isToday ? "font-semibold text-emerald-400" : ""}>{dayNumber}</span>
+                <span className={isToday ? "font-semibold text-emerald-600" : ""}>{dayNumber}</span>
                 <span className="flex gap-0.5 h-2 items-center">
                   {entry?.workoutCount ? <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> : null}
                   {entry?.calories ? <span className="w-1.5 h-1.5 rounded-full bg-amber-400" /> : null}
@@ -194,7 +194,7 @@ export default async function CalendarPage({
           })}
         </div>
 
-        <div className="flex gap-4 mt-4 text-xs text-neutral-400">
+        <div className="flex gap-4 mt-4 text-xs text-neutral-600">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Workout
           </span>
@@ -207,17 +207,17 @@ export default async function CalendarPage({
         </div>
       </section>
 
-      <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold">{selectedLabel}</h2>
-          <Link href={`/nutrition?date=${selectedDate}`} className="text-sm text-emerald-400 hover:underline">
+          <Link href={`/nutrition?date=${selectedDate}`} className="text-sm text-emerald-600 hover:underline">
             Log food →
           </Link>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
-            <h3 className="text-sm font-medium text-neutral-300 mb-3">Nutrition</h3>
+            <h3 className="text-sm font-medium text-neutral-600 mb-3">Nutrition</h3>
             {dayFoodLogs.length === 0 ? (
               <p className="text-sm text-neutral-500">Nothing logged this day.</p>
             ) : (
@@ -231,7 +231,7 @@ export default async function CalendarPage({
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-neutral-300 mb-3">Workouts</h3>
+            <h3 className="text-sm font-medium text-neutral-600 mb-3">Workouts</h3>
             {daySessions.length === 0 ? (
               <p className="text-sm text-neutral-500">No workouts logged this day.</p>
             ) : (
@@ -242,10 +242,10 @@ export default async function CalendarPage({
                     <li key={session.id}>
                       <Link
                         href={`/workouts/${session.id}`}
-                        className="flex items-center justify-between rounded-lg border border-neutral-800 px-3 py-2 hover:border-emerald-600/50 transition-colors"
+                        className="flex items-center justify-between rounded-lg border border-neutral-300 px-3 py-2 hover:border-emerald-600/50 transition-colors"
                       >
                         <span>{session.title}</span>
-                        <span className="text-sm text-neutral-400">
+                        <span className="text-sm text-neutral-600">
                           {session.sets.length} sets · {Math.round(totalVolume)} kg
                         </span>
                       </Link>
@@ -255,11 +255,11 @@ export default async function CalendarPage({
               </ul>
             )}
 
-            <h3 className="text-sm font-medium text-neutral-300 mt-5 mb-2">Body Weight</h3>
+            <h3 className="text-sm font-medium text-neutral-600 mt-5 mb-2">Body Weight</h3>
             {dayWeightLog ? (
               <p className="text-sm">
                 <span className="text-2xl font-bold">{round(dayWeightLog.weightKg, 1)}</span>{" "}
-                <span className="text-neutral-400">kg</span>
+                <span className="text-neutral-600">kg</span>
               </p>
             ) : (
               <p className="text-sm text-neutral-500">No weight logged this day.</p>

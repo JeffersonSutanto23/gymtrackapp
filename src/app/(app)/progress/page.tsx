@@ -13,9 +13,9 @@ export default async function ProgressPage({
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold">Progress</h1>
-        <p className="text-neutral-400 text-sm mt-1">Track max weight and volume per exercise over time.</p>
+        <p className="text-neutral-600 text-sm mt-1">Track max weight and volume per exercise over time.</p>
       </div>
-      <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <ProgressExplorer exercises={exercises} initialExerciseId={exerciseId} />
       </section>
     </div>

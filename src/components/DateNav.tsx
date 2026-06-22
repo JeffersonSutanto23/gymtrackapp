@@ -15,7 +15,7 @@ export function DateNav({ date }: { date: string }) {
     <div className="flex items-center gap-2">
       <button
         onClick={() => router.push(`/nutrition?date=${shiftDate(date, -1)}`)}
-        className="rounded-md border border-neutral-800 px-2 py-1.5 hover:bg-neutral-800 transition-colors"
+        className="rounded-md border border-neutral-300 px-2 py-1.5 hover:bg-neutral-100 transition-colors"
         aria-label="Previous day"
       >
         ←
@@ -24,11 +24,11 @@ export function DateNav({ date }: { date: string }) {
         type="date"
         value={date}
         onChange={(e) => router.push(`/nutrition?date=${e.target.value}`)}
-        className="rounded-md bg-neutral-900 border border-neutral-800 px-3 py-1.5 outline-none focus:border-emerald-500"
+        className="rounded-md bg-white border border-neutral-300 px-3 py-1.5 outline-none focus:border-emerald-500"
       />
       <button
         onClick={() => router.push(`/nutrition?date=${shiftDate(date, 1)}`)}
-        className="rounded-md border border-neutral-800 px-2 py-1.5 hover:bg-neutral-800 transition-colors"
+        className="rounded-md border border-neutral-300 px-2 py-1.5 hover:bg-neutral-100 transition-colors"
         aria-label="Next day"
       >
         →

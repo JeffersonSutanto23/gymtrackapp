@@ -27,17 +27,17 @@ export default async function ProfilePage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold">Profile</h1>
-        <p className="text-neutral-400 text-sm mt-1">
+        <p className="text-neutral-600 text-sm mt-1">
           {user!.name} · {user!.email}
         </p>
       </div>
 
-      <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <h2 className="font-semibold mb-4">Goal & Targets</h2>
         <ProfileForm initial={initial} />
       </section>
 
-      <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <h2 className="font-semibold mb-4">Body Weight</h2>
         <BodyWeightForm />
         <div className="mt-4">
@@ -46,7 +46,7 @@ export default async function ProfilePage() {
         {weightLogs.length > 0 && (
           <ul className="mt-4 flex flex-col gap-1 max-h-56 overflow-y-auto">
             {weightLogs.map((log) => (
-              <li key={log.id} className="flex items-center justify-between text-sm py-1 border-b border-neutral-900">
+              <li key={log.id} className="flex items-center justify-between text-sm py-1 border-b border-neutral-100">
                 <span>{new Date(log.loggedAt).toLocaleString()}</span>
                 <span className="flex items-center gap-3">
                   <span>{round(log.weightKg, 1)} kg</span>

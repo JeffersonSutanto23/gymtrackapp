@@ -39,7 +39,7 @@ export function NewWorkoutForm() {
         placeholder="e.g. Push Day"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="flex-1 rounded-md bg-neutral-900 border border-neutral-800 px-3 py-2 outline-none focus:border-emerald-500"
+        className="flex-1 rounded-md bg-white border border-neutral-300 px-3 py-2 outline-none focus:border-emerald-500"
       />
       <button
         type="submit"
@@ -48,7 +48,7 @@ export function NewWorkoutForm() {
       >
         {loading ? "Creating..." : "Start Workout"}
       </button>
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
     </form>
   );
 }

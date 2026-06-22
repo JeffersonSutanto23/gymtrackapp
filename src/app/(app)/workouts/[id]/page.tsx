@@ -27,23 +27,23 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between">
         <div>
-          <Link href="/workouts" className="text-sm text-emerald-400 hover:underline">
+          <Link href="/workouts" className="text-sm text-emerald-600 hover:underline">
             ← All workouts
           </Link>
           <h1 className="text-2xl font-bold mt-1">{session.title}</h1>
-          <p className="text-neutral-400 text-sm">
+          <p className="text-neutral-600 text-sm">
             {new Date(session.startedAt).toLocaleString()} · {session.sets.length} sets · {Math.round(totalVolume)} kg volume
           </p>
         </div>
         <DeleteButton endpoint={`/api/workouts/${session.id}`} redirectTo="/workouts" label="Delete session" />
       </div>
 
-      <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <h2 className="font-semibold mb-3">Add Set</h2>
         <AddSetForm sessionId={session.id} exercises={exercises} nextSetNumber={nextSetNumber} />
       </section>
 
-      <section className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
+      <section className="rounded-xl border border-neutral-300 bg-neutral-50 p-5">
         <h2 className="font-semibold mb-3">Sets</h2>
         {session.sets.length === 0 ? (
           <p className="text-sm text-neutral-500">No sets logged yet.</p>
@@ -51,7 +51,7 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-neutral-400 border-b border-neutral-800">
+                <tr className="text-left text-neutral-600 border-b border-neutral-300">
                   <th className="py-2 pr-2">#</th>
                   <th className="py-2 pr-2">Exercise</th>
                   <th className="py-2 pr-2">Muscle</th>
@@ -63,14 +63,14 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
               </thead>
               <tbody>
                 {session.sets.map((set) => (
-                  <tr key={set.id} className="border-b border-neutral-900">
+                  <tr key={set.id} className="border-b border-neutral-100">
                     <td className="py-2 pr-2">{set.setNumber}</td>
                     <td className="py-2 pr-2">
-                      <Link href={`/progress?exerciseId=${set.exerciseId}`} className="hover:text-emerald-400">
+                      <Link href={`/progress?exerciseId=${set.exerciseId}`} className="hover:text-emerald-600">
                         {set.exercise.name}
                       </Link>
                     </td>
-                    <td className="py-2 pr-2 text-neutral-400">{MUSCLE_GROUP_LABELS[set.exercise.muscleGroup]}</td>
+                    <td className="py-2 pr-2 text-neutral-600">{MUSCLE_GROUP_LABELS[set.exercise.muscleGroup]}</td>
                     <td className="py-2 pr-2">{set.reps}</td>
                     <td className="py-2 pr-2">{set.weightKg} kg</td>
                     <td className="py-2 pr-2">{set.rpe ?? "—"}</td>
