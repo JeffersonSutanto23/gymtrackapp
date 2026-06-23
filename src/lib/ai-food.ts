@@ -1,7 +1,7 @@
 import { FOOD_CATEGORIES } from "@/lib/categories";
 
-const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
-const DEFAULT_MODEL = "gemini-2.0-flash";
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const DEFAULT_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
 export type FoodEstimate = {
   name: string;
@@ -20,80 +20,67 @@ export type FoodEstimate = {
 
 export class AIAnalysisError extends Error {}
 
-type GeminiResponse = {
-  candidates?: { content?: { parts?: { text?: string }[] } }[];
+type GroqResponse = {
+  choices?: { message?: { content?: string } }[];
 };
 
+const FOOD_ESTIMATE_FIELDS = [
+  "name (short string, name of the dish or food item)",
+  `category (string, must be exactly one of: ${FOOD_CATEGORIES.join(", ")})`,
+  "servingSize (number, estimated serving size)",
+  "servingUnit (string, unit for servingSize, e.g. g, piece, cup)",
+  "calories (number)",
+  "proteinG (number, grams of protein)",
+  "carbsG (number, grams of carbohydrates)",
+  "fatG (number, grams of fat)",
+  "fiberG (number, grams of fiber)",
+  "sugarG (number, grams of sugar)",
+  "sodiumMg (number, milligrams of sodium)",
+  "notes (string, one sentence on assumptions or confidence)",
+].join("\n");
+
 export async function analyzeFoodPhoto(base64Image: string, mediaType: string): Promise<FoodEstimate> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    throw new AIAnalysisError("AI photo analysis is not configured (missing GEMINI_API_KEY).");
+    throw new AIAnalysisError("AI photo analysis is not configured (missing GROQ_API_KEY).");
   }
 
-  const model = process.env.GEMINI_MODEL ?? DEFAULT_MODEL;
-  const res = await fetch(`${GEMINI_API_BASE}/${model}:generateContent?key=${apiKey}`, {
+  const model = process.env.GROQ_MODEL ?? DEFAULT_MODEL;
+  const res = await fetch(GROQ_API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
     body: JSON.stringify({
-      contents: [
+      model,
+      response_format: { type: "json_object" },
+      messages: [
         {
           role: "user",
-          parts: [
-            { inline_data: { mime_type: mediaType, data: base64Image } },
+          content: [
             {
-              text: "Estimate the nutrition for the food/meal shown in this photo, for one visible serving.",
+              type: "text",
+              text: `Estimate the nutrition for the food/meal shown in this photo, for one visible serving. Respond with ONLY a JSON object with exactly these fields:\n${FOOD_ESTIMATE_FIELDS}`,
             },
+            { type: "image_url", image_url: { url: `data:${mediaType};base64,${base64Image}` } },
           ],
         },
       ],
-      generationConfig: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "OBJECT",
-          properties: {
-            name: { type: "STRING", description: "Short name of the dish or food item" },
-            category: { type: "STRING", enum: [...FOOD_CATEGORIES] },
-            servingSize: { type: "NUMBER", description: "Estimated serving size as a number" },
-            servingUnit: { type: "STRING", description: "Unit for servingSize, e.g. g, piece, cup" },
-            calories: { type: "NUMBER" },
-            proteinG: { type: "NUMBER" },
-            carbsG: { type: "NUMBER" },
-            fatG: { type: "NUMBER" },
-            fiberG: { type: "NUMBER" },
-            sugarG: { type: "NUMBER" },
-            sodiumMg: { type: "NUMBER" },
-            notes: { type: "STRING", description: "One sentence on assumptions or confidence" },
-          },
-          required: [
-            "name",
-            "category",
-            "servingSize",
-            "servingUnit",
-            "calories",
-            "proteinG",
-            "carbsG",
-            "fatG",
-            "fiberG",
-            "sugarG",
-            "sodiumMg",
-            "notes",
-          ],
-        },
-      },
     }),
   });
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     if (res.status === 429) {
-      console.error("Gemini API 429:", text);
+      console.error("Groq API 429:", text);
       throw new AIAnalysisError("AI usage limit reached for now. Wait a minute and try again.");
     }
     throw new AIAnalysisError(`AI request failed (${res.status}): ${text.slice(0, 200)}`);
   }
 
-  const data = (await res.json()) as GeminiResponse;
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  const data = (await res.json()) as GroqResponse;
+  const text = data.choices?.[0]?.message?.content;
   if (!text) {
     throw new AIAnalysisError("AI did not return a structured estimate.");
   }
