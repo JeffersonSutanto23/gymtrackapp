@@ -58,9 +58,9 @@ export default async function ProfilePage() {
         {weightLogs.length > 0 && (
           <ul className="mt-4 flex flex-col gap-1 max-h-56 overflow-y-auto">
             {weightLogs.map((log) => (
-              <li key={log.id} className="flex items-center justify-between text-sm py-1 border-b border-neutral-100">
-                <span className="text-neutral-500">{new Date(log.loggedAt).toLocaleString()}</span>
-                <span className="flex items-center gap-3">
+              <li key={log.id} className="flex items-center justify-between gap-2 text-sm py-1 border-b border-neutral-100">
+                <span className="whitespace-nowrap text-neutral-500">{new Date(log.loggedAt).toLocaleString()}</span>
+                <span className="flex shrink-0 items-center gap-3">
                   <span className="font-medium text-neutral-900">{round(log.weightKg, 1)} kg</span>
                   <DeleteButton endpoint={`/api/bodyweight/${log.id}`} />
                 </span>

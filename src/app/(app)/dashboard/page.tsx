@@ -164,10 +164,10 @@ export default async function DashboardPage() {
               <li key={session.id}>
                 <Link
                   href={`/workouts/${session.id}`}
-                  className="flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-neutral-50"
+                  className="flex min-w-0 items-center justify-between gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-neutral-50"
                 >
-                  <span className="font-medium">{session.title}</span>
-                  <span className="text-sm text-neutral-500">
+                  <span className="truncate font-medium">{session.title}</span>
+                  <span className="shrink-0 whitespace-nowrap text-sm text-neutral-500">
                     {new Date(session.startedAt).toLocaleDateString()} · {session.sets.length} sets
                   </span>
                 </Link>

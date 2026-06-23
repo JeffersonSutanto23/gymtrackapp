@@ -87,11 +87,13 @@ export function SleepLogRow({ log }: { log: SleepLog }) {
 
   return (
     <li className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-neutral-50">
-      <span className="font-medium">{round(sleepHours(log.bedTime, log.wakeTime), 1)} h</span>
-      <span className="text-neutral-500">
-        {formatTime(log.bedTime)} – {formatTime(log.wakeTime)} · {new Date(log.wakeTime).toLocaleDateString()}
-      </span>
-      <span className="flex items-center">
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <span className="font-medium">{round(sleepHours(log.bedTime, log.wakeTime), 1)} h</span>
+        <span className="text-xs text-neutral-500">
+          {formatTime(log.bedTime)} – {formatTime(log.wakeTime)} · {new Date(log.wakeTime).toLocaleDateString()}
+        </span>
+      </div>
+      <span className="flex shrink-0 items-center">
         <button
           onClick={() => setEditing(true)}
           aria-label="Edit"

@@ -36,12 +36,12 @@ export default async function WorkoutsPage() {
               const totalVolume = session.sets.reduce((sum, s) => sum + s.reps * s.weightKg, 0);
               return (
                 <li key={session.id} className="flex items-center gap-2 rounded-lg transition-colors hover:bg-neutral-50">
-                  <Link href={`/workouts/${session.id}`} className="flex flex-1 items-center justify-between gap-3 px-2 py-2.5">
-                    <div>
-                      <p className="font-medium text-neutral-900">{session.title}</p>
-                      <p className="text-sm text-neutral-500">{new Date(session.startedAt).toLocaleString()}</p>
+                  <Link href={`/workouts/${session.id}`} className="flex min-w-0 flex-1 items-center justify-between gap-3 px-2 py-2.5">
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-neutral-900">{session.title}</p>
+                      <p className="text-sm whitespace-nowrap text-neutral-500">{new Date(session.startedAt).toLocaleString()}</p>
                     </div>
-                    <div className="text-right text-sm text-neutral-500">
+                    <div className="shrink-0 text-right text-sm whitespace-nowrap text-neutral-500">
                       <p>{session.sets.length} sets</p>
                       <p>{Math.round(totalVolume)} kg volume</p>
                     </div>

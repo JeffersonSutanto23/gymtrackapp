@@ -117,12 +117,14 @@ export function CardioLogRow({ log }: { log: CardioLog }) {
 
   return (
     <li className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-neutral-50">
-      <span className="font-medium">{CARDIO_TYPE_LABELS[log.activity]}</span>
-      <span className="text-neutral-500">
-        {log.durationMin} min{log.distanceKm ? ` · ${log.distanceKm} km` : ""}
-        {log.calories ? ` · ${log.calories} kcal` : ""} · {new Date(log.loggedAt).toLocaleDateString()}
-      </span>
-      <span className="flex items-center">
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <span className="font-medium">{CARDIO_TYPE_LABELS[log.activity]}</span>
+        <span className="text-xs text-neutral-500">
+          {log.durationMin} min{log.distanceKm ? ` · ${log.distanceKm} km` : ""}
+          {log.calories ? ` · ${log.calories} kcal` : ""} · {new Date(log.loggedAt).toLocaleDateString()}
+        </span>
+      </div>
+      <span className="flex shrink-0 items-center">
         <button
           onClick={() => setEditing(true)}
           aria-label="Edit"

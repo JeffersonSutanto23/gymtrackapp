@@ -29,7 +29,7 @@ export function EditSessionTitle({ sessionId, title }: { sessionId: string; titl
   if (!editing) {
     return (
       <div className="flex items-center gap-2 mt-1">
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">{title}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-white">{title}</h1>
         <button
           onClick={() => setEditing(true)}
           aria-label="Edit title"

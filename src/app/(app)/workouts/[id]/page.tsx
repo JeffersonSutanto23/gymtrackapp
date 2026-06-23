@@ -72,7 +72,7 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
             <ChevronLeft className="h-3.5 w-3.5" /> All workouts
           </Link>
           <EditSessionTitle sessionId={session.id} title={session.title} />
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-400">
             {new Date(session.startedAt).toLocaleString()} · {session.sets.length} sets · {Math.round(totalVolume)} kg volume
           </p>
         </div>
