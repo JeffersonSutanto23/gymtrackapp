@@ -84,6 +84,9 @@ export async function analyzeFoodPhoto(base64Image: string, mediaType: string): 
   });
 
   if (!res.ok) {
+    if (res.status === 429) {
+      throw new AIAnalysisError("AI usage limit reached for now. Wait a minute and try again.");
+    }
     const text = await res.text().catch(() => "");
     throw new AIAnalysisError(`AI request failed (${res.status}): ${text.slice(0, 200)}`);
   }
