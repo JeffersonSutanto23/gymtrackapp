@@ -1,7 +1,7 @@
 import { FOOD_CATEGORIES } from "@/lib/categories";
 
-const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const DEFAULT_MODEL = "claude-sonnet-4-6";
+const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
+const DEFAULT_MODEL = "gemini-2.0-flash";
 
 export type FoodEstimate = {
   name: string;
@@ -20,78 +20,66 @@ export type FoodEstimate = {
 
 export class AIAnalysisError extends Error {}
 
-type AnthropicTextBlock = { type: "text"; text: string };
-type AnthropicToolUseBlock = { type: "tool_use"; id: string; name: string; input: unknown };
-type AnthropicMessageResponse = {
-  content: (AnthropicTextBlock | AnthropicToolUseBlock)[];
+type GeminiResponse = {
+  candidates?: { content?: { parts?: { text?: string }[] } }[];
 };
 
 export async function analyzeFoodPhoto(base64Image: string, mediaType: string): Promise<FoodEstimate> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new AIAnalysisError("AI photo analysis is not configured (missing ANTHROPIC_API_KEY).");
+    throw new AIAnalysisError("AI photo analysis is not configured (missing GEMINI_API_KEY).");
   }
 
-  const res = await fetch(ANTHROPIC_API_URL, {
+  const model = process.env.GEMINI_MODEL ?? DEFAULT_MODEL;
+  const res = await fetch(`${GEMINI_API_BASE}/${model}:generateContent?key=${apiKey}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
-      max_tokens: 1024,
-      tools: [
-        {
-          name: "report_nutrition_estimate",
-          description: "Report a best-effort nutrition estimate for the food shown in the photo.",
-          input_schema: {
-            type: "object",
-            properties: {
-              name: { type: "string", description: "Short name of the dish or food item" },
-              category: { type: "string", enum: [...FOOD_CATEGORIES] },
-              servingSize: { type: "number", description: "Estimated serving size as a number" },
-              servingUnit: { type: "string", description: "Unit for servingSize, e.g. g, piece, cup" },
-              calories: { type: "number" },
-              proteinG: { type: "number" },
-              carbsG: { type: "number" },
-              fatG: { type: "number" },
-              fiberG: { type: "number" },
-              sugarG: { type: "number" },
-              sodiumMg: { type: "number" },
-              notes: { type: "string", description: "One sentence on assumptions or confidence" },
-            },
-            required: [
-              "name",
-              "category",
-              "servingSize",
-              "servingUnit",
-              "calories",
-              "proteinG",
-              "carbsG",
-              "fatG",
-              "fiberG",
-              "sugarG",
-              "sodiumMg",
-              "notes",
-            ],
-          },
-        },
-      ],
-      tool_choice: { type: "tool", name: "report_nutrition_estimate" },
-      messages: [
+      contents: [
         {
           role: "user",
-          content: [
-            { type: "image", source: { type: "base64", media_type: mediaType, data: base64Image } },
+          parts: [
+            { inline_data: { mime_type: mediaType, data: base64Image } },
             {
-              type: "text",
               text: "Estimate the nutrition for the food/meal shown in this photo, for one visible serving.",
             },
           ],
         },
       ],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          properties: {
+            name: { type: "STRING", description: "Short name of the dish or food item" },
+            category: { type: "STRING", enum: [...FOOD_CATEGORIES] },
+            servingSize: { type: "NUMBER", description: "Estimated serving size as a number" },
+            servingUnit: { type: "STRING", description: "Unit for servingSize, e.g. g, piece, cup" },
+            calories: { type: "NUMBER" },
+            proteinG: { type: "NUMBER" },
+            carbsG: { type: "NUMBER" },
+            fatG: { type: "NUMBER" },
+            fiberG: { type: "NUMBER" },
+            sugarG: { type: "NUMBER" },
+            sodiumMg: { type: "NUMBER" },
+            notes: { type: "STRING", description: "One sentence on assumptions or confidence" },
+          },
+          required: [
+            "name",
+            "category",
+            "servingSize",
+            "servingUnit",
+            "calories",
+            "proteinG",
+            "carbsG",
+            "fatG",
+            "fiberG",
+            "sugarG",
+            "sodiumMg",
+            "notes",
+          ],
+        },
+      },
     }),
   });
 
@@ -100,11 +88,15 @@ export async function analyzeFoodPhoto(base64Image: string, mediaType: string): 
     throw new AIAnalysisError(`AI request failed (${res.status}): ${text.slice(0, 200)}`);
   }
 
-  const data = (await res.json()) as AnthropicMessageResponse;
-  const toolUse = data.content.find((block): block is AnthropicToolUseBlock => block.type === "tool_use");
-  if (!toolUse) {
+  const data = (await res.json()) as GeminiResponse;
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) {
     throw new AIAnalysisError("AI did not return a structured estimate.");
   }
 
-  return toolUse.input as FoodEstimate;
+  try {
+    return JSON.parse(text) as FoodEstimate;
+  } catch {
+    throw new AIAnalysisError("AI returned an invalid response.");
+  }
 }
