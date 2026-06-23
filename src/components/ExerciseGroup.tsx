@@ -33,9 +33,9 @@ export function ExerciseGroup({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left"
+        className="flex w-full flex-col gap-1 px-3 py-2.5 text-left sm:flex-row sm:items-center sm:justify-between sm:gap-2"
       >
-        <span className="flex items-center gap-2 truncate">
+        <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <Link
             href={`/progress?exerciseId=${exerciseId}`}
             onClick={(e) => e.stopPropagation()}
@@ -45,9 +45,11 @@ export function ExerciseGroup({
           </Link>
           <span className="text-xs text-neutral-400">{MUSCLE_GROUP_LABELS[muscleGroup]}</span>
         </span>
-        <span className="flex items-center gap-3 whitespace-nowrap text-sm text-neutral-500">
-          {sets.length} sets · {Math.round(totalVolume)} kg
-          <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className="flex items-center justify-between gap-3 text-sm text-neutral-500 sm:shrink-0 sm:justify-end sm:whitespace-nowrap">
+          <span>
+            {sets.length} sets · {Math.round(totalVolume)} kg
+          </span>
+          <ChevronDown className={`h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
         </span>
       </button>
       {open && (
