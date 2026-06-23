@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
 import { GOAL_PRESETS, MEAL_TYPE_LABELS } from "@/lib/goals";
+import { getClientOffsetMinutes, clientDateStr, clientDateStrToRange } from "@/lib/timezone";
 import { MacroBar } from "@/components/MacroBar";
 import { FoodSearchPicker } from "@/components/FoodSearchPicker";
 import { FoodPhotoAnalyzer } from "@/components/FoodPhotoAnalyzer";
@@ -13,23 +14,17 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export default async function NutritionPage({
   searchParams,
 }: {
   searchParams: Promise<{ date?: string }>;
 }) {
   const { date: dateParam } = await searchParams;
-  const date = dateParam ?? todayStr();
+  const offsetMinutes = await getClientOffsetMinutes();
+  const date = dateParam ?? clientDateStr(offsetMinutes);
   const user = await getCurrentUser();
 
-  const start = new Date(date);
-  start.setHours(0, 0, 0, 0);
-  const end = new Date(start);
-  end.setDate(end.getDate() + 1);
+  const { start, end } = clientDateStrToRange(date, offsetMinutes);
 
   const [profile, logs] = await Promise.all([
     prisma.profile.findUnique({ where: { userId: user!.id } }),

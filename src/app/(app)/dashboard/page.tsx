@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
 import { sleepHours } from "@/lib/sleep";
 import { GOAL_LABELS, GOAL_PRESETS } from "@/lib/goals";
+import { getClientOffsetMinutes, startOfClientDay } from "@/lib/timezone";
 import { MacroBar } from "@/components/MacroBar";
 import { WeightChart } from "@/components/WeightChart";
 import { Card } from "@/components/ui/Card";
@@ -15,7 +16,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 export default async function DashboardPage() {
   const user = await getCurrentUser();
 
-  const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
+  const offsetMinutes = await getClientOffsetMinutes();
+  const startOfDay = startOfClientDay(offsetMinutes);
 
   const [profile, todayLogs, weightLogs, recentSessions, todayCardio, todaySleep, todayWater] = await Promise.all([
     prisma.profile.findUnique({ where: { userId: user!.id } }),

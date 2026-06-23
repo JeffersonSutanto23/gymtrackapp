@@ -4,10 +4,15 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ICON_BTN, INPUT } from "@/lib/ui";
 
+function pad(n: number) {
+  return String(n).padStart(2, "0");
+}
+
 function shiftDate(date: string, days: number) {
-  const d = new Date(date);
+  const [year, month, day] = date.split("-").map(Number);
+  const d = new Date(year, month - 1, day);
   d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
 export function DateNav({ date }: { date: string }) {

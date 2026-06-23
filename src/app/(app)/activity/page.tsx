@@ -1,6 +1,7 @@
 import { Activity, GlassWater, Moon } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { getClientOffsetMinutes, startOfClientDay } from "@/lib/timezone";
 import { CardioForm } from "@/components/CardioForm";
 import { SleepForm } from "@/components/SleepForm";
 import { WaterForm } from "@/components/WaterForm";
@@ -14,7 +15,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 
 export default async function ActivityPage() {
   const user = await getCurrentUser();
-  const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
+  const offsetMinutes = await getClientOffsetMinutes();
+  const startOfDay = startOfClientDay(offsetMinutes);
 
   const [cardioLogs, sleepLogs, waterLogs] = await Promise.all([
     prisma.cardioLog.findMany({ where: { userId: user!.id }, orderBy: { loggedAt: "desc" }, take: 10 }),

@@ -16,6 +16,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
 import { GOAL_PRESETS, CARDIO_TYPE_LABELS } from "@/lib/goals";
 import { sleepHours, formatTime } from "@/lib/sleep";
+import { getClientOffsetMinutes, clientDateStr, clientDateStrToRange } from "@/lib/timezone";
 import { MacroBar } from "@/components/MacroBar";
 import { CalendarDateJump } from "@/components/CalendarDateJump";
 import { Card } from "@/components/ui/Card";
@@ -27,14 +28,6 @@ const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
-}
-
-function dateKey(d: Date) {
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-
-function todayStr() {
-  return dateKey(new Date());
 }
 
 function parseMonth(monthStr: string) {
@@ -53,7 +46,8 @@ export default async function CalendarPage({
   searchParams: Promise<{ month?: string; date?: string }>;
 }) {
   const { month: monthParam, date: dateParam } = await searchParams;
-  const today = todayStr();
+  const offsetMinutes = await getClientOffsetMinutes();
+  const today = clientDateStr(offsetMinutes);
   const month = monthParam ?? today.slice(0, 7);
   const selectedDate = dateParam ?? today;
 
@@ -65,10 +59,7 @@ export default async function CalendarPage({
 
   const user = await getCurrentUser();
 
-  const dayStart = new Date(selectedDate);
-  dayStart.setHours(0, 0, 0, 0);
-  const dayEnd = new Date(dayStart);
-  dayEnd.setDate(dayEnd.getDate() + 1);
+  const { start: dayStart, end: dayEnd } = clientDateStrToRange(selectedDate, offsetMinutes);
 
   const [
     profile,
@@ -139,25 +130,25 @@ export default async function CalendarPage({
   >();
 
   for (const log of monthFoodLogs) {
-    const key = dateKey(new Date(log.loggedAt));
+    const key = clientDateStr(offsetMinutes, new Date(log.loggedAt));
     const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false, hasActivity: false };
     entry.calories += log.food.calories * log.servings;
     dayIndex.set(key, entry);
   }
   for (const session of monthSessions) {
-    const key = dateKey(new Date(session.startedAt));
+    const key = clientDateStr(offsetMinutes, new Date(session.startedAt));
     const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false, hasActivity: false };
     entry.workoutCount += 1;
     dayIndex.set(key, entry);
   }
   for (const log of monthWeightLogs) {
-    const key = dateKey(new Date(log.loggedAt));
+    const key = clientDateStr(offsetMinutes, new Date(log.loggedAt));
     const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false, hasActivity: false };
     entry.hasWeight = true;
     dayIndex.set(key, entry);
   }
   for (const log of [...monthCardioLogs, ...monthSleepLogs, ...monthWaterLogs]) {
-    const key = dateKey(new Date(log.loggedAt));
+    const key = clientDateStr(offsetMinutes, new Date(log.loggedAt));
     const entry = dayIndex.get(key) ?? { calories: 0, workoutCount: 0, hasWeight: false, hasActivity: false };
     entry.hasActivity = true;
     dayIndex.set(key, entry);
