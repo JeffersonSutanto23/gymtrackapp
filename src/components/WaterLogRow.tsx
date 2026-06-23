@@ -33,7 +33,7 @@ export function WaterLogRow({ log }: { log: WaterLog }) {
   if (editing) {
     return (
       <li className="flex flex-col gap-2 rounded-lg border border-neutral-200 px-3 py-2 text-sm">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <input
             type="number"
             min={1}
