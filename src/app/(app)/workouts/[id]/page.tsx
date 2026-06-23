@@ -4,9 +4,10 @@ import { ChevronLeft, ListChecks, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { AddSetForm } from "@/components/AddSetForm";
+import { AddExerciseForm } from "@/components/AddExerciseForm";
 import { DeleteButton } from "@/components/DeleteButton";
 import { EditSessionTitle } from "@/components/EditSessionTitle";
-import { SetRow } from "@/components/SetRow";
+import { ExerciseGroup } from "@/components/ExerciseGroup";
 import { Card } from "@/components/ui/Card";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -41,6 +42,28 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
     }
   }
 
+  const exerciseGroups: {
+    exerciseId: string;
+    exerciseName: string;
+    muscleGroup: (typeof session.sets)[number]["exercise"]["muscleGroup"];
+    sets: typeof session.sets;
+  }[] = [];
+  const groupIndexByExerciseId = new Map<string, number>();
+  for (const set of session.sets) {
+    const idx = groupIndexByExerciseId.get(set.exerciseId);
+    if (idx === undefined) {
+      groupIndexByExerciseId.set(set.exerciseId, exerciseGroups.length);
+      exerciseGroups.push({
+        exerciseId: set.exerciseId,
+        exerciseName: set.exercise.name,
+        muscleGroup: set.exercise.muscleGroup,
+        sets: [set],
+      });
+    } else {
+      exerciseGroups[idx].sets.push(set);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between gap-3">
@@ -64,32 +87,26 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
           nextSetNumber={nextSetNumber}
           lastSetByExercise={lastSetByExercise}
         />
+        <div className="mt-3">
+          <AddExerciseForm />
+        </div>
       </Card>
 
       <Card>
         <SectionHeader icon={ListChecks} title="Sets" />
-        {session.sets.length === 0 ? (
+        {exerciseGroups.length === 0 ? (
           <EmptyState icon={ListChecks} message="No sets logged yet." />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-neutral-500 border-b border-neutral-200">
-                  <th className="py-2 pr-2">#</th>
-                  <th className="py-2 pr-2">Exercise</th>
-                  <th className="py-2 pr-2">Muscle</th>
-                  <th className="py-2 pr-2">Reps</th>
-                  <th className="py-2 pr-2">Weight</th>
-                  <th className="py-2 pr-2">RPE</th>
-                  <th className="py-2 pr-2"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {session.sets.map((set) => (
-                  <SetRow key={set.id} set={set} />
-                ))}
-              </tbody>
-            </table>
+          <div className="flex flex-col gap-2">
+            {exerciseGroups.map((group) => (
+              <ExerciseGroup
+                key={group.exerciseId}
+                exerciseId={group.exerciseId}
+                exerciseName={group.exerciseName}
+                muscleGroup={group.muscleGroup}
+                sets={group.sets}
+              />
+            ))}
           </div>
         )}
       </Card>

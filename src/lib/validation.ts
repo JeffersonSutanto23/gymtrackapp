@@ -84,6 +84,25 @@ export const waterLogSchema = z.object({
   loggedAt: z.string().optional(),
 });
 
+export const customExerciseSchema = z.object({
+  name: z.string().min(1).max(120),
+  muscleGroup: z.enum([
+    "CHEST",
+    "BACK",
+    "SHOULDERS",
+    "BICEPS",
+    "TRICEPS",
+    "LEGS",
+    "GLUTES",
+    "CALVES",
+    "CORE",
+    "FULL_BODY",
+    "CARDIO",
+  ]),
+  equipment: z.string().max(80).optional(),
+  isCompound: z.boolean().optional(),
+});
+
 export const customFoodSchema = z.object({
   name: z.string().min(1).max(120),
   brand: z.string().max(80).optional(),

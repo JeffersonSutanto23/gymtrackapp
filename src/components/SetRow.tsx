@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, Loader2, Pencil, X } from "lucide-react";
 import { DeleteButton } from "@/components/DeleteButton";
-import { MUSCLE_GROUP_LABELS } from "@/lib/goals";
 import { INPUT } from "@/lib/ui";
 
 type Set = {
@@ -14,8 +12,6 @@ type Set = {
   reps: number;
   weightKg: number;
   rpe: number | null;
-  exerciseId: string;
-  exercise: { name: string; muscleGroup: keyof typeof MUSCLE_GROUP_LABELS };
 };
 
 export function SetRow({ set }: { set: Set }) {
@@ -43,9 +39,7 @@ export function SetRow({ set }: { set: Set }) {
   if (editing) {
     return (
       <tr className="border-b border-neutral-100">
-        <td className="py-2 pr-2 text-neutral-500">{set.setNumber}</td>
-        <td className="py-2 pr-2 font-medium">{set.exercise.name}</td>
-        <td className="py-2 pr-2 text-neutral-500">{MUSCLE_GROUP_LABELS[set.exercise.muscleGroup]}</td>
+        <td className="py-2 pl-3 pr-2 text-neutral-500">{set.setNumber}</td>
         <td className="py-2 pr-2">
           <input
             type="number"
@@ -99,13 +93,7 @@ export function SetRow({ set }: { set: Set }) {
 
   return (
     <tr className="border-b border-neutral-100">
-      <td className="py-2 pr-2 text-neutral-500">{set.setNumber}</td>
-      <td className="py-2 pr-2 font-medium">
-        <Link href={`/progress?exerciseId=${set.exerciseId}`} className="hover:text-emerald-600">
-          {set.exercise.name}
-        </Link>
-      </td>
-      <td className="py-2 pr-2 text-neutral-500">{MUSCLE_GROUP_LABELS[set.exercise.muscleGroup]}</td>
+      <td className="py-2 pl-3 pr-2 text-neutral-500">{set.setNumber}</td>
       <td className="py-2 pr-2">{set.reps}</td>
       <td className="py-2 pr-2">{set.weightKg} kg</td>
       <td className="py-2 pr-2">{set.rpe ?? "—"}</td>
