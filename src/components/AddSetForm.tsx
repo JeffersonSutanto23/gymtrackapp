@@ -36,8 +36,8 @@ export function AddSetForm({
 }) {
   const router = useRouter();
   const [exerciseId, setExerciseId] = useState(exercises[0]?.id ?? "");
-  const [reps, setReps] = useState(8);
-  const [weightKg, setWeightKg] = useState(20);
+  const [reps, setReps] = useState("8");
+  const [weightKg, setWeightKg] = useState("20");
   const [rpe, setRpe] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,8 +47,8 @@ export function AddSetForm({
 
   function applySuggestion() {
     if (!suggestion) return;
-    setReps(suggestion.reps);
-    setWeightKg(suggestion.weightKg);
+    setReps(String(suggestion.reps));
+    setWeightKg(String(suggestion.weightKg));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -63,8 +63,8 @@ export function AddSetForm({
       body: JSON.stringify({
         exerciseId,
         setNumber: nextSetNumber,
-        reps,
-        weightKg,
+        reps: Number(reps),
+        weightKg: Number(weightKg),
         rpe: rpe ? Number(rpe) : undefined,
       }),
     });
@@ -117,7 +117,7 @@ export function AddSetForm({
           min={1}
           required
           value={reps}
-          onChange={(e) => setReps(Number(e.target.value))}
+          onChange={(e) => setReps(e.target.value)}
           className={`${INPUT} py-2`}
         />
       </div>
@@ -129,7 +129,7 @@ export function AddSetForm({
           step={0.5}
           required
           value={weightKg}
-          onChange={(e) => setWeightKg(Number(e.target.value))}
+          onChange={(e) => setWeightKg(e.target.value)}
           className={`${INPUT} py-2`}
         />
       </div>

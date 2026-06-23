@@ -17,17 +17,18 @@ type Set = {
 export function SetRow({ set }: { set: Set }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
-  const [reps, setReps] = useState(set.reps);
-  const [weightKg, setWeightKg] = useState(set.weightKg);
+  const [reps, setReps] = useState(set.reps.toString());
+  const [weightKg, setWeightKg] = useState(set.weightKg.toString());
   const [rpe, setRpe] = useState(set.rpe?.toString() ?? "");
   const [loading, setLoading] = useState(false);
 
   async function handleSave() {
+    if (!reps || !weightKg) return;
     setLoading(true);
     const res = await fetch(`/api/workout-sets/${set.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reps, weightKg, rpe: rpe ? Number(rpe) : undefined }),
+      body: JSON.stringify({ reps: Number(reps), weightKg: Number(weightKg), rpe: rpe ? Number(rpe) : undefined }),
     });
     setLoading(false);
     if (res.ok) {
@@ -45,7 +46,7 @@ export function SetRow({ set }: { set: Set }) {
             type="number"
             min={1}
             value={reps}
-            onChange={(e) => setReps(Number(e.target.value))}
+            onChange={(e) => setReps(e.target.value)}
             className={`w-16 ${INPUT} py-1`}
           />
         </td>
@@ -55,7 +56,7 @@ export function SetRow({ set }: { set: Set }) {
             min={0}
             step={0.5}
             value={weightKg}
-            onChange={(e) => setWeightKg(Number(e.target.value))}
+            onChange={(e) => setWeightKg(e.target.value)}
             className={`w-20 ${INPUT} py-1`}
           />
         </td>
