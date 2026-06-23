@@ -18,6 +18,11 @@ export const profileSchema = z.object({
   targetProteinG: z.number().int().nonnegative(),
   targetCarbsG: z.number().int().nonnegative(),
   targetFatG: z.number().int().nonnegative(),
+  age: z.number().int().positive().max(120).optional().nullable(),
+  sex: z.enum(["MALE", "FEMALE"]).optional().nullable(),
+  activityLevel: z.enum(["SEDENTARY", "LIGHT", "MODERATE", "ACTIVE", "VERY_ACTIVE"]).optional().nullable(),
+  targetWeightKg: z.number().positive().optional().nullable(),
+  targetDate: z.string().optional().nullable(),
 });
 
 export const bodyWeightSchema = z.object({

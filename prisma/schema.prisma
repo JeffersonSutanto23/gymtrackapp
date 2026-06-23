@@ -47,6 +47,19 @@ enum CardioType {
   OTHER
 }
 
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHT
+  MODERATE
+  ACTIVE
+  VERY_ACTIVE
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -68,13 +81,18 @@ model Profile {
   id             String   @id @default(cuid())
   userId         String   @unique
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  goal           Goal     @default(MAINTAIN)
+  goal           Goal           @default(MAINTAIN)
   heightCm       Float?
-  targetCalories Int      @default(2400)
-  targetProteinG Int      @default(180)
-  targetCarbsG   Int      @default(280)
-  targetFatG     Int      @default(80)
-  updatedAt      DateTime @updatedAt
+  targetCalories Int            @default(2400)
+  targetProteinG Int            @default(180)
+  targetCarbsG   Int            @default(280)
+  targetFatG     Int            @default(80)
+  age            Int?
+  sex            Sex?
+  activityLevel  ActivityLevel?
+  targetWeightKg Float?
+  targetDate     DateTime?
+  updatedAt      DateTime       @updatedAt
 }
 
 model BodyWeightLog {

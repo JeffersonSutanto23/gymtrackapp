@@ -19,7 +19,20 @@ export default async function ProfilePage() {
     prisma.bodyWeightLog.findMany({ where: { userId: user!.id }, orderBy: { loggedAt: "desc" } }),
   ]);
 
-  const initial = profile ?? { goal: "MAINTAIN" as const, heightCm: null, ...GOAL_PRESETS.MAINTAIN };
+  const initial = {
+    goal: profile?.goal ?? ("MAINTAIN" as const),
+    heightCm: profile?.heightCm ?? null,
+    targetCalories: profile?.targetCalories ?? GOAL_PRESETS.MAINTAIN.targetCalories,
+    targetProteinG: profile?.targetProteinG ?? GOAL_PRESETS.MAINTAIN.targetProteinG,
+    targetCarbsG: profile?.targetCarbsG ?? GOAL_PRESETS.MAINTAIN.targetCarbsG,
+    targetFatG: profile?.targetFatG ?? GOAL_PRESETS.MAINTAIN.targetFatG,
+    age: profile?.age ?? null,
+    sex: profile?.sex ?? null,
+    activityLevel: profile?.activityLevel ?? null,
+    targetWeightKg: profile?.targetWeightKg ?? null,
+    targetDate: profile?.targetDate ? profile.targetDate.toISOString().slice(0, 10) : null,
+  };
+  const currentWeightKg = weightLogs[0]?.weightKg ?? null;
   const chartData = [...weightLogs]
     .reverse()
     .map((log) => ({
@@ -33,7 +46,7 @@ export default async function ProfilePage() {
 
       <Card>
         <SectionHeader icon={Target} title="Goal & Targets" />
-        <ProfileForm initial={initial} />
+        <ProfileForm initial={initial} currentWeightKg={currentWeightKg} />
       </Card>
 
       <Card>

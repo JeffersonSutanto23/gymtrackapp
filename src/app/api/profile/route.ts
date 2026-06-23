@@ -21,10 +21,15 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid input" }, { status: 400 });
   }
 
+  const data = {
+    ...parsed.data,
+    targetDate: parsed.data.targetDate ? new Date(parsed.data.targetDate) : null,
+  };
+
   const profile = await prisma.profile.upsert({
     where: { userId: user!.id },
-    update: parsed.data,
-    create: { userId: user!.id, ...parsed.data },
+    update: data,
+    create: { userId: user!.id, ...data },
   });
 
   return NextResponse.json(profile);
