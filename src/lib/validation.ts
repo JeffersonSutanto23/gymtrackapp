@@ -70,6 +70,14 @@ export const cardioLogSchema = z.object({
   loggedAt: z.string().optional(),
 });
 
+export const cardioLogUpdateSchema = z.object({
+  activity: z.enum(["RUN", "TREADMILL", "BIKE", "SWIM", "WALK", "OTHER"]),
+  durationMin: z.number().int().positive(),
+  distanceKm: z.number().nonnegative().optional().nullable(),
+  calories: z.number().int().nonnegative().optional().nullable(),
+  loggedAt: z.string().min(1),
+});
+
 export const sleepLogSchema = z
   .object({
     bedTime: z.string().min(1),
@@ -82,6 +90,11 @@ export const sleepLogSchema = z
 export const waterLogSchema = z.object({
   glasses: z.number().int().positive().max(50),
   loggedAt: z.string().optional(),
+});
+
+export const waterLogUpdateSchema = z.object({
+  glasses: z.number().int().positive().max(50),
+  loggedAt: z.string().min(1),
 });
 
 export const customExerciseSchema = z.object({

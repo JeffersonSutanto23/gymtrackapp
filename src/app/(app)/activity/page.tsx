@@ -1,13 +1,12 @@
 import { Activity, GlassWater, Moon } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { CARDIO_TYPE_LABELS } from "@/lib/goals";
-import { formatTime, sleepHours } from "@/lib/sleep";
-import { round } from "@/lib/nutrition";
 import { CardioForm } from "@/components/CardioForm";
 import { SleepForm } from "@/components/SleepForm";
 import { WaterForm } from "@/components/WaterForm";
-import { DeleteButton } from "@/components/DeleteButton";
+import { CardioLogRow } from "@/components/CardioLogRow";
+import { SleepLogRow } from "@/components/SleepLogRow";
+import { WaterLogRow } from "@/components/WaterLogRow";
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -38,18 +37,17 @@ export default async function ActivityPage() {
           ) : (
             <ul className="flex flex-col gap-1">
               {cardioLogs.map((log) => (
-                <li
+                <CardioLogRow
                   key={log.id}
-                  className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-neutral-50"
-                >
-                  <span className="font-medium">{CARDIO_TYPE_LABELS[log.activity]}</span>
-                  <span className="text-neutral-500">
-                    {log.durationMin} min{log.distanceKm ? ` · ${log.distanceKm} km` : ""}
-                    {log.calories ? ` · ${log.calories} kcal` : ""} ·{" "}
-                    {new Date(log.loggedAt).toLocaleDateString()}
-                  </span>
-                  <DeleteButton endpoint={`/api/cardio/${log.id}`} />
-                </li>
+                  log={{
+                    id: log.id,
+                    activity: log.activity,
+                    durationMin: log.durationMin,
+                    distanceKm: log.distanceKm,
+                    calories: log.calories,
+                    loggedAt: log.loggedAt.toISOString(),
+                  }}
+                />
               ))}
             </ul>
           )}
@@ -66,17 +64,14 @@ export default async function ActivityPage() {
             ) : (
               <ul className="flex flex-col gap-1">
                 {sleepLogs.map((log) => (
-                  <li
+                  <SleepLogRow
                     key={log.id}
-                    className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-neutral-50"
-                  >
-                    <span className="font-medium">{round(sleepHours(log.bedTime, log.wakeTime), 1)} h</span>
-                    <span className="text-neutral-500">
-                      {formatTime(log.bedTime)} – {formatTime(log.wakeTime)} ·{" "}
-                      {new Date(log.wakeTime).toLocaleDateString()}
-                    </span>
-                    <DeleteButton endpoint={`/api/sleep/${log.id}`} />
-                  </li>
+                    log={{
+                      id: log.id,
+                      bedTime: log.bedTime.toISOString(),
+                      wakeTime: log.wakeTime.toISOString(),
+                    }}
+                  />
                 ))}
               </ul>
             )}
@@ -96,14 +91,10 @@ export default async function ActivityPage() {
             ) : (
               <ul className="flex flex-col gap-1">
                 {waterLogs.map((log) => (
-                  <li
+                  <WaterLogRow
                     key={log.id}
-                    className="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-neutral-50"
-                  >
-                    <span className="font-medium">+{log.glasses} glass{log.glasses > 1 ? "es" : ""}</span>
-                    <span className="text-neutral-500">{new Date(log.loggedAt).toLocaleTimeString()}</span>
-                    <DeleteButton endpoint={`/api/water/${log.id}`} />
-                  </li>
+                    log={{ id: log.id, glasses: log.glasses, loggedAt: log.loggedAt.toISOString() }}
+                  />
                 ))}
               </ul>
             )}
