@@ -71,15 +71,15 @@ export function ProfileForm({
       setPlanError("Log a body weight entry below first, so we know your starting point.");
       return;
     }
-    if (!age || !sex || !activityLevel || !targetWeightKg || !targetDate) {
-      setPlanError("Fill in age, sex, activity level, target weight, and target date first.");
+    if (!age || !sex || !activityLevel || !targetWeightKg) {
+      setPlanError("Fill in age, sex, activity level, and target weight first.");
       return;
     }
 
-    const date = new Date(targetDate);
-    if (Number.isNaN(date.getTime()) || date.getTime() <= Date.now()) {
-      setPlanError("Target date must be in the future.");
-      return;
+    let parsedTargetDate: Date | undefined;
+    if (targetDate) {
+      const date = new Date(targetDate);
+      if (!Number.isNaN(date.getTime())) parsedTargetDate = date;
     }
 
     const plan = calculateNutritionPlan({
@@ -89,7 +89,7 @@ export function ProfileForm({
       currentWeightKg,
       activityLevel,
       targetWeightKg,
-      targetDate: date,
+      targetDate: parsedTargetDate,
     });
 
     setTargetCalories(plan.targetCalories);
@@ -97,11 +97,17 @@ export function ProfileForm({
     setTargetCarbsG(plan.targetCarbsG);
     setTargetFatG(plan.targetFatG);
 
-    const direction = plan.dailyCalorieAdjustment >= 0 ? "surplus" : "deficit";
-    setPlanSummary(
-      `BMR ~${plan.bmr} kcal · TDEE ~${plan.tdee} kcal · ${plan.daysUntilTarget} days left · ${Math.abs(plan.dailyCalorieAdjustment)} kcal/day ${direction}` +
-        (plan.cappedToMinimum ? " (capped at a safe minimum)" : "")
-    );
+    const direction = plan.dailyCalorieAdjustment > 0 ? "surplus" : plan.dailyCalorieAdjustment < 0 ? "deficit" : "maintenance";
+    const pace =
+      plan.weeklyRateKg !== 0
+        ? `${Math.abs(plan.weeklyRateKg)} kg/week ${direction === "surplus" ? "gain" : "loss"} pace · ~${plan.estimatedWeeksToGoal} weeks to ${targetWeightKg} kg`
+        : "already at target weight";
+
+    let summary = `BMR ~${plan.bmr} kcal · TDEE ~${plan.tdee} kcal · ${Math.abs(plan.dailyCalorieAdjustment)} kcal/day ${direction} · ${pace}`;
+    if (plan.cappedToMinimum) summary += " (capped at a safe minimum)";
+    if (plan.targetDateRealistic === false) summary += " — your target date is sooner than a sustainable pace allows";
+
+    setPlanSummary(summary);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -155,9 +161,10 @@ export function ProfileForm({
       </div>
 
       <div className="flex flex-col gap-2 rounded-lg border border-neutral-200 p-4">
-        <label className="text-sm font-medium text-neutral-700">Reach a target weight by a date</label>
+        <label className="text-sm font-medium text-neutral-700">Calculate targets for your goal weight</label>
         <p className="text-xs text-neutral-500">
-          Fill these in to calculate the daily calories and macros needed to reach your target weight by a chosen date.
+          Uses a sustainable bulk/cut pace (~0.35%/week gain, ~0.7%/week loss of bodyweight) to set your daily
+          calories — not a fixed deadline, so the numbers stay stable day to day as long as your weight does.
         </p>
         <div className="grid sm:grid-cols-2 gap-3">
           <OptionalNumberField label="Age" value={age} onChange={setAge} min={1} />
@@ -186,7 +193,7 @@ export function ProfileForm({
           </label>
           <OptionalNumberField label="Target weight (kg)" value={targetWeightKg} onChange={setTargetWeightKg} step={0.1} />
           <label className="flex flex-col gap-1 text-sm font-medium text-neutral-700">
-            Target date
+            Target date (optional, just to check it&apos;s realistic)
             <input type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)} className={INPUT} />
           </label>
         </div>

@@ -38,6 +38,12 @@ export type Sex = "MALE" | "FEMALE";
 const KCAL_PER_KG = 7700;
 const MIN_CALORIES = 1200;
 
+// Sustainable weekly rate of bodyweight change, as a fraction of current bodyweight.
+// These follow standard sports-nutrition guidance for lean bulking / safe fat loss,
+// and stay CONSTANT day to day — they don't depend on how soon a target date is.
+const BULK_WEEKLY_RATE_PCT = 0.0035; // ~0.35% bodyweight/week
+const CUT_WEEKLY_RATE_PCT = 0.007; // ~0.7% bodyweight/week
+
 export type NutritionPlanInput = {
   sex: Sex;
   age: number;
@@ -45,20 +51,22 @@ export type NutritionPlanInput = {
   currentWeightKg: number;
   activityLevel: ActivityLevel;
   targetWeightKg: number;
-  targetDate: Date;
+  targetDate?: Date;
   now?: Date;
 };
 
 export type NutritionPlan = {
   bmr: number;
   tdee: number;
-  daysUntilTarget: number;
+  weeklyRateKg: number;
   dailyCalorieAdjustment: number;
+  estimatedWeeksToGoal: number;
   targetCalories: number;
   targetProteinG: number;
   targetCarbsG: number;
   targetFatG: number;
   cappedToMinimum: boolean;
+  targetDateRealistic: boolean | null;
 };
 
 export function calculateNutritionPlan(input: NutritionPlanInput): NutritionPlan {
@@ -69,9 +77,19 @@ export function calculateNutritionPlan(input: NutritionPlanInput): NutritionPlan
     10 * currentWeightKg + 6.25 * heightCm - 5 * age + (sex === "MALE" ? 5 : -161);
   const tdee = bmr * ACTIVITY_MULTIPLIERS[activityLevel];
 
-  const daysUntilTarget = Math.max(1, Math.ceil((targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
-  const totalKcalNeeded = (targetWeightKg - currentWeightKg) * KCAL_PER_KG;
-  const dailyCalorieAdjustment = totalKcalNeeded / daysUntilTarget;
+  const weightGapKg = targetWeightKg - currentWeightKg;
+  const weeklyRateKg =
+    weightGapKg === 0
+      ? 0
+      : Math.sign(weightGapKg) * currentWeightKg * (weightGapKg > 0 ? BULK_WEEKLY_RATE_PCT : CUT_WEEKLY_RATE_PCT);
+  const dailyCalorieAdjustment = (weeklyRateKg * KCAL_PER_KG) / 7;
+  const estimatedWeeksToGoal = weeklyRateKg === 0 ? 0 : Math.abs(weightGapKg / weeklyRateKg);
+
+  let targetDateRealistic: boolean | null = null;
+  if (targetDate) {
+    const weeksUntilTarget = (targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 7);
+    targetDateRealistic = weeksUntilTarget >= estimatedWeeksToGoal;
+  }
 
   const rawTargetCalories = tdee + dailyCalorieAdjustment;
   const targetCalories = Math.max(MIN_CALORIES, Math.round(rawTargetCalories));
@@ -84,12 +102,14 @@ export function calculateNutritionPlan(input: NutritionPlanInput): NutritionPlan
   return {
     bmr: Math.round(bmr),
     tdee: Math.round(tdee),
-    daysUntilTarget,
+    weeklyRateKg: Math.round(weeklyRateKg * 100) / 100,
     dailyCalorieAdjustment: Math.round(dailyCalorieAdjustment),
+    estimatedWeeksToGoal: Math.round(estimatedWeeksToGoal * 10) / 10,
     targetCalories,
     targetProteinG,
     targetCarbsG,
     targetFatG,
     cappedToMinimum,
+    targetDateRealistic,
   };
 }
