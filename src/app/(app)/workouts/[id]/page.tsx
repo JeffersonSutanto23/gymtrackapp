@@ -73,7 +73,8 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
           </Link>
           <EditSessionTitle sessionId={session.id} title={session.title} />
           <p className="text-sm text-neutral-400">
-            {new Date(session.startedAt).toLocaleString()} · {session.sets.length} sets · {Math.round(totalVolume)} kg volume
+            {new Date(session.startedAt).toLocaleString("en-US", { timeZone: "Asia/Jakarta" })} · {session.sets.length} sets ·{" "}
+            {Math.round(totalVolume)} kg volume
           </p>
         </div>
         <DeleteButton endpoint={`/api/workouts/${session.id}`} redirectTo="/workouts" label="Delete session" />

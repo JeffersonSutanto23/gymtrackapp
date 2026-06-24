@@ -42,7 +42,9 @@ export default async function WorkoutsPage() {
                   >
                     <div className="min-w-0">
                       <p className="truncate font-medium text-neutral-900">{session.title}</p>
-                      <p className="truncate text-sm text-neutral-500">{new Date(session.startedAt).toLocaleString()}</p>
+                      <p className="truncate text-sm text-neutral-500">
+                        {new Date(session.startedAt).toLocaleString("en-US", { timeZone: "Asia/Jakarta" })}
+                      </p>
                     </div>
                     <div className="flex gap-3 text-sm text-neutral-500 sm:shrink-0 sm:flex-col sm:gap-0 sm:text-right sm:whitespace-nowrap">
                       <p>{session.sets.length} sets</p>

@@ -32,7 +32,7 @@ export function ProgressExplorer({ exercises, initialExerciseId }: { exercises: 
         .then((rows: { date: string; maxWeight: number; volume: number }[]) => {
           setData(
             rows.map((row) => ({
-              date: new Date(row.date).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+              date: new Date(row.date).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "Asia/Jakarta" }),
               maxWeight: row.maxWeight,
               volume: Math.round(row.volume),
             }))

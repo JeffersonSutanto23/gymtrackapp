@@ -164,11 +164,12 @@ export default async function CalendarPage({
 
   const targets = profile ?? { ...GOAL_PRESETS.MAINTAIN };
   const dayTotals = computeFoodLogTotals(dayFoodLogs);
-  const monthLabel = monthStart.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-  const selectedLabel = new Date(`${selectedDate}T00:00:00`).toLocaleDateString(undefined, {
+  const monthLabel = monthStart.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "Asia/Jakarta" });
+  const selectedLabel = new Date(`${selectedDate}T00:00:00`).toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
+    timeZone: "Asia/Jakarta",
   });
 
   return (

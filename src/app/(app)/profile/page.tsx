@@ -36,7 +36,7 @@ export default async function ProfilePage() {
   const chartData = [...weightLogs]
     .reverse()
     .map((log) => ({
-      date: new Date(log.loggedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+      date: new Date(log.loggedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "Asia/Jakarta" }),
       weightKg: round(log.weightKg, 1),
     }));
 
@@ -59,7 +59,9 @@ export default async function ProfilePage() {
           <ul className="mt-4 flex flex-col gap-1 max-h-56 overflow-y-auto">
             {weightLogs.map((log) => (
               <li key={log.id} className="flex items-center justify-between gap-2 text-sm py-1 border-b border-neutral-100">
-                <span className="whitespace-nowrap text-neutral-500">{new Date(log.loggedAt).toLocaleString()}</span>
+                <span className="whitespace-nowrap text-neutral-500">
+                  {new Date(log.loggedAt).toLocaleString("en-US", { timeZone: "Asia/Jakarta" })}
+                </span>
                 <span className="flex shrink-0 items-center gap-3">
                   <span className="font-medium text-neutral-900">{round(log.weightKg, 1)} kg</span>
                   <DeleteButton endpoint={`/api/bodyweight/${log.id}`} />

@@ -121,7 +121,8 @@ export function CardioLogRow({ log }: { log: CardioLog }) {
         <span className="font-medium">{CARDIO_TYPE_LABELS[log.activity]}</span>
         <span className="text-xs text-neutral-500">
           {log.durationMin} min{log.distanceKm ? ` · ${log.distanceKm} km` : ""}
-          {log.calories ? ` · ${log.calories} kcal` : ""} · {new Date(log.loggedAt).toLocaleDateString()}
+          {log.calories ? ` · ${log.calories} kcal` : ""} ·{" "}
+          {new Date(log.loggedAt).toLocaleDateString("en-US", { timeZone: "Asia/Jakarta" })}
         </span>
       </div>
       <span className="flex shrink-0 items-center">

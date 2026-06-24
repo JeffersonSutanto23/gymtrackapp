@@ -54,7 +54,7 @@ export default async function DashboardPage() {
   const weightDelta = latestWeight && firstWeight ? latestWeight.weightKg - firstWeight.weightKg : null;
 
   const chartData = weightLogs.map((log) => ({
-    date: new Date(log.loggedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+    date: new Date(log.loggedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "Asia/Jakarta" }),
     weightKg: round(log.weightKg, 1),
   }));
 
@@ -170,7 +170,8 @@ export default async function DashboardPage() {
                 >
                   <span className="truncate font-medium">{session.title}</span>
                   <span className="shrink-0 whitespace-nowrap text-sm text-neutral-500">
-                    {new Date(session.startedAt).toLocaleDateString()} · {session.sets.length} sets
+                    {new Date(session.startedAt).toLocaleDateString("en-US", { timeZone: "Asia/Jakarta" })} ·{" "}
+                    {session.sets.length} sets
                   </span>
                 </Link>
               </li>
