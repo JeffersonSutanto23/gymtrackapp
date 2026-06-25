@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Dumbbell, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { getClientOffsetMinutes, formatClientDateTime } from "@/lib/timezone";
 import { NewWorkoutForm } from "@/components/NewWorkoutForm";
 import { DeleteButton } from "@/components/DeleteButton";
 import { Card } from "@/components/ui/Card";
@@ -11,6 +12,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 
 export default async function WorkoutsPage() {
   const user = await getCurrentUser();
+  const offsetMinutes = await getClientOffsetMinutes();
 
   const sessions = await prisma.workoutSession.findMany({
     where: { userId: user!.id },
@@ -43,7 +45,7 @@ export default async function WorkoutsPage() {
                     <div className="min-w-0">
                       <p className="truncate font-medium text-neutral-900">{session.title}</p>
                       <p className="truncate text-sm text-neutral-500">
-                        {new Date(session.startedAt).toLocaleString("en-US", { timeZone: "Asia/Jakarta" })}
+                        {formatClientDateTime(session.startedAt, offsetMinutes)}
                       </p>
                     </div>
                     <div className="flex gap-3 text-sm text-neutral-500 sm:shrink-0 sm:flex-col sm:gap-0 sm:text-right sm:whitespace-nowrap">

@@ -3,7 +3,7 @@ export function sleepHours(bedTime: Date | string, wakeTime: Date | string) {
   return ms / (1000 * 60 * 60);
 }
 
-const timeFormatter = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Jakarta" });
+const timeFormatter = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" });
 
 export function formatTime(date: Date | string) {
   return timeFormatter.format(new Date(date));

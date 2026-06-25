@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
 import { sleepHours } from "@/lib/sleep";
 import { GOAL_LABELS, GOAL_PRESETS } from "@/lib/goals";
-import { getClientOffsetMinutes, startOfClientDay } from "@/lib/timezone";
+import { getClientOffsetMinutes, startOfClientDay, formatClientDateTime } from "@/lib/timezone";
 import { MacroBar } from "@/components/MacroBar";
 import { WeightChart } from "@/components/WeightChart";
 import { Card } from "@/components/ui/Card";
@@ -54,7 +54,7 @@ export default async function DashboardPage() {
   const weightDelta = latestWeight && firstWeight ? latestWeight.weightKg - firstWeight.weightKg : null;
 
   const chartData = weightLogs.map((log) => ({
-    date: new Date(log.loggedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "Asia/Jakarta" }),
+    date: formatClientDateTime(log.loggedAt, offsetMinutes, { month: "short", day: "numeric" }),
     weightKg: round(log.weightKg, 1),
   }));
 
@@ -170,8 +170,7 @@ export default async function DashboardPage() {
                 >
                   <span className="truncate font-medium">{session.title}</span>
                   <span className="shrink-0 whitespace-nowrap text-sm text-neutral-500">
-                    {new Date(session.startedAt).toLocaleDateString("en-US", { timeZone: "Asia/Jakarta" })} ·{" "}
-                    {session.sets.length} sets
+                    {formatClientDateTime(session.startedAt, offsetMinutes)} · {session.sets.length} sets
                   </span>
                 </Link>
               </li>

@@ -15,8 +15,8 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { computeFoodLogTotals, round } from "@/lib/nutrition";
 import { GOAL_PRESETS, CARDIO_TYPE_LABELS } from "@/lib/goals";
-import { sleepHours, formatTime } from "@/lib/sleep";
-import { getClientOffsetMinutes, clientDateStr, clientDateStrToRange } from "@/lib/timezone";
+import { sleepHours } from "@/lib/sleep";
+import { getClientOffsetMinutes, clientDateStr, clientDateStrToRange, formatClientDateTime } from "@/lib/timezone";
 import { MacroBar } from "@/components/MacroBar";
 import { CalendarDateJump } from "@/components/CalendarDateJump";
 import { Card } from "@/components/ui/Card";
@@ -164,12 +164,12 @@ export default async function CalendarPage({
 
   const targets = profile ?? { ...GOAL_PRESETS.MAINTAIN };
   const dayTotals = computeFoodLogTotals(dayFoodLogs);
-  const monthLabel = monthStart.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "Asia/Jakarta" });
+  const monthLabel = monthStart.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
   const selectedLabel = new Date(`${selectedDate}T00:00:00`).toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
-    timeZone: "Asia/Jakarta",
+    timeZone: "UTC",
   });
 
   return (
@@ -352,7 +352,8 @@ export default async function CalendarPage({
                   <li key={log.id} className="text-sm">
                     <span className="font-medium">{round(sleepHours(log.bedTime, log.wakeTime), 1)} h</span>{" "}
                     <span className="text-neutral-500">
-                      {formatTime(log.bedTime)} – {formatTime(log.wakeTime)}
+                      {formatClientDateTime(log.bedTime, offsetMinutes, { hour: "numeric", minute: "2-digit" })} –{" "}
+                      {formatClientDateTime(log.wakeTime, offsetMinutes, { hour: "numeric", minute: "2-digit" })}
                     </span>
                   </li>
                 ))}

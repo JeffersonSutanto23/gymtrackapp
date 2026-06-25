@@ -77,7 +77,7 @@ export function WaterLogRow({ log }: { log: WaterLog }) {
           +{log.glasses} glass{log.glasses > 1 ? "es" : ""}
         </span>
         <span className="text-xs text-neutral-500">
-          {new Date(log.loggedAt).toLocaleTimeString("en-US", { timeZone: "Asia/Jakarta" })}
+          {new Date(log.loggedAt).toLocaleTimeString()}
         </span>
       </div>
       <span className="flex shrink-0 items-center">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeft, ListChecks, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { getClientOffsetMinutes, formatClientDateTime } from "@/lib/timezone";
 import { AddSetForm } from "@/components/AddSetForm";
 import { AddExerciseForm } from "@/components/AddExerciseForm";
 import { DeleteButton } from "@/components/DeleteButton";
@@ -15,6 +16,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 export default async function WorkoutDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await getCurrentUser();
+  const offsetMinutes = await getClientOffsetMinutes();
 
   const [session, exercises, recentSets] = await Promise.all([
     prisma.workoutSession.findUnique({
@@ -73,7 +75,7 @@ export default async function WorkoutDetailPage({ params }: { params: Promise<{ 
           </Link>
           <EditSessionTitle sessionId={session.id} title={session.title} />
           <p className="text-sm text-neutral-400">
-            {new Date(session.startedAt).toLocaleString("en-US", { timeZone: "Asia/Jakarta" })} · {session.sets.length} sets ·{" "}
+            {formatClientDateTime(session.startedAt, offsetMinutes)} · {session.sets.length} sets ·{" "}
             {Math.round(totalVolume)} kg volume
           </p>
         </div>

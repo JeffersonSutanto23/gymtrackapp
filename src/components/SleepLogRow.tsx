@@ -91,7 +91,7 @@ export function SleepLogRow({ log }: { log: SleepLog }) {
         <span className="font-medium">{round(sleepHours(log.bedTime, log.wakeTime), 1)} h</span>
         <span className="text-xs text-neutral-500">
           {formatTime(log.bedTime)} – {formatTime(log.wakeTime)} ·{" "}
-          {new Date(log.wakeTime).toLocaleDateString("en-US", { timeZone: "Asia/Jakarta" })}
+          {new Date(log.wakeTime).toLocaleDateString()}
         </span>
       </div>
       <span className="flex shrink-0 items-center">
