@@ -71,9 +71,6 @@ export default async function Home() {
       </header>
 
       <section className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 pt-20 pb-16 text-center sm:pt-28">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-neutral-300">
-          <Flame className="h-3 w-3 text-amber-400" /> Free, open-source, installable as a PWA
-        </span>
         <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
           Train smarter. Eat smarter. <span className="text-emerald-400">See it all in one place.</span>
         </h1>
